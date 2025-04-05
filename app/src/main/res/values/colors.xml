@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <!-- 기본 색상 값 -->
+    <color name="colorPrimary">#6200EE</color>  <!-- 기본 앱 색상 -->
+    <color name="colorPrimaryDark">#3700B3</color>  <!-- 상태 바 색상 -->
+    <color name="colorAccent">#03DAC5</color>  <!-- 강조 색상 -->
+    
+    <!-- GitHub 컨트리뷰션 그래프 색상 -->
+    <color name="github_green_light">#9BE9A8</color>
+    <color name="github_green_medium">#40C463</color>
+    <color name="github_green_dark">#30A14E</color>
+    <color name="github_green_extreme">#216E39</color>
+    <color name="github_background">#F5F5F5</color>
+</resources>

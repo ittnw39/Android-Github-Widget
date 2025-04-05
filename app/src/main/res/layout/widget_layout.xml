@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/layout/widget_layout.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:padding="12dp"
+              android:background="@color/github_background">
+
+    <TextView
+            android:id="@+id/widget_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GitHub 컨트리뷰션"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+    <GridLayout
+            android:id="@+id/contribution_grid_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="7"
+            android:rowCount="7"
+            android:layout_marginBottom="8dp"
+            android:useDefaultMargins="true">
+
+        <!-- 49개 셀 수동 정의 -->
+        <!-- 자동 생성된 grid_cell_0 ~ grid_cell_48 -->
+        <View android:id="@+id/grid_cell_0" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_1" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_2" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_3" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_4" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_5" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_6" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_7" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_8" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_9" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_10" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_11" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_12" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_13" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_14" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_15" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_16" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_17" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_18" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_19" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_20" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_21" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_22" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_23" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_24" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_25" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_26" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_27" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_28" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_29" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_30" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_31" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_32" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_33" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_34" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_35" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_36" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_37" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_38" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_39" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_40" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_41" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_42" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_43" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_44" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_45" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_46" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_47" style="@style/ContributionCellStyle" />
+        <View android:id="@+id/grid_cell_48" style="@style/ContributionCellStyle" />
+    </GridLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="오늘: "
+                android:textStyle="bold" />
+
+        <TextView
+                android:id="@+id/today_contributions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0" />
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="전체: "
+                android:textStyle="bold" />
+
+        <TextView
+                android:id="@+id/total_contributions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0" />
+    </LinearLayout>
+
+    <Button
+            android:id="@+id/refresh_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="새로고침"
+            android:layout_marginTop="8dp" />
+</LinearLayout>
