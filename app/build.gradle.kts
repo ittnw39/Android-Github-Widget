@@ -16,6 +16,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // local.properties에서 토큰 읽기
+        val props = java.util.Properties().apply {
+            load(project.rootProject.file("local.properties").inputStream())
+        }
+        val githubToken = props.getProperty("GITHUB_API_TOKEN") ?: ""
+
+        // BuildConfig에 주입
+        buildConfigField("String", "GITHUB_API_TOKEN", "\"$githubToken\"")
     }
 
     buildFeatures {
