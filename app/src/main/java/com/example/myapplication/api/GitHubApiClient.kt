@@ -1,6 +1,7 @@
 package com.example.myapplication.api
 
 import android.content.Context
+import com.example.myapplication.BuildConfig
 import com.example.myapplication.util.Constants
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -31,8 +32,10 @@ object GitHubApiClient {
         val token = if (context != null) {
             getSavedToken(context)
         } else {
-            cachedToken ?: Constants.GITHUB_API_TOKEN
+            cachedToken ?: BuildConfig.GITHUB_API_TOKEN
         }
+
+        println("👉 AuthHeader 사용 중: ${token.take(8)}...") // 일부만 출력
         
         return "token $token"
     }
@@ -41,9 +44,9 @@ object GitHubApiClient {
     fun getSavedToken(context: Context): String {
         if (cachedToken == null) {
             val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-            cachedToken = prefs.getString(KEY_TOKEN, Constants.GITHUB_API_TOKEN) ?: Constants.GITHUB_API_TOKEN
+            cachedToken = prefs.getString(KEY_TOKEN, BuildConfig.GITHUB_API_TOKEN) ?: BuildConfig.GITHUB_API_TOKEN
         }
-        return cachedToken ?: Constants.GITHUB_API_TOKEN
+        return cachedToken ?: BuildConfig.GITHUB_API_TOKEN
     }
     
     // SharedPreferences에 토큰 저장
@@ -51,5 +54,19 @@ object GitHubApiClient {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit().putString(KEY_TOKEN, token).apply()
         cachedToken = token
+    }
+
+    val graphqlService: GitHubGraphQLService by lazy {
+        Retrofit.Builder()
+            .baseUrl("https://api.github.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(OkHttpClient.Builder().addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .addHeader("Authorization", getAuthHeader())
+                    .build()
+                chain.proceed(request)
+            }.build())
+            .build()
+            .create(GitHubGraphQLService::class.java)
     }
 } 

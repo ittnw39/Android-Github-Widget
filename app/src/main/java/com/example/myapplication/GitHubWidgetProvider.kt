@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.RemoteViews
@@ -26,13 +27,16 @@ class GitHubWidgetProvider : AppWidgetProvider() {
         private const val MAX_DAYS = 49
 
         val cellIds = listOf(
-            R.id.grid_cell_0, R.id.grid_cell_1, R.id.grid_cell_2, R.id.grid_cell_3, R.id.grid_cell_4, R.id.grid_cell_5, R.id.grid_cell_6,
-            R.id.grid_cell_7, R.id.grid_cell_8, R.id.grid_cell_9, R.id.grid_cell_10, R.id.grid_cell_11, R.id.grid_cell_12, R.id.grid_cell_13,
-            R.id.grid_cell_14, R.id.grid_cell_15, R.id.grid_cell_16, R.id.grid_cell_17, R.id.grid_cell_18, R.id.grid_cell_19, R.id.grid_cell_20,
-            R.id.grid_cell_21, R.id.grid_cell_22, R.id.grid_cell_23, R.id.grid_cell_24, R.id.grid_cell_25, R.id.grid_cell_26, R.id.grid_cell_27,
-            R.id.grid_cell_28, R.id.grid_cell_29, R.id.grid_cell_30, R.id.grid_cell_31, R.id.grid_cell_32, R.id.grid_cell_33, R.id.grid_cell_34,
-            R.id.grid_cell_35, R.id.grid_cell_36, R.id.grid_cell_37, R.id.grid_cell_38, R.id.grid_cell_39, R.id.grid_cell_40, R.id.grid_cell_41,
-            R.id.grid_cell_42, R.id.grid_cell_43, R.id.grid_cell_44, R.id.grid_cell_45, R.id.grid_cell_46, R.id.grid_cell_47, R.id.grid_cell_48
+            R.id.grid_cell_0, R.id.grid_cell_1, R.id.grid_cell_2, R.id.grid_cell_3, R.id.grid_cell_4,
+            R.id.grid_cell_5, R.id.grid_cell_6, R.id.grid_cell_7, R.id.grid_cell_8, R.id.grid_cell_9,
+            R.id.grid_cell_10, R.id.grid_cell_11, R.id.grid_cell_12, R.id.grid_cell_13, R.id.grid_cell_14,
+            R.id.grid_cell_15, R.id.grid_cell_16, R.id.grid_cell_17, R.id.grid_cell_18, R.id.grid_cell_19,
+            R.id.grid_cell_20, R.id.grid_cell_21, R.id.grid_cell_22, R.id.grid_cell_23, R.id.grid_cell_24,
+            R.id.grid_cell_25, R.id.grid_cell_26, R.id.grid_cell_27, R.id.grid_cell_28, R.id.grid_cell_29,
+            R.id.grid_cell_30, R.id.grid_cell_31, R.id.grid_cell_32, R.id.grid_cell_33, R.id.grid_cell_34,
+            R.id.grid_cell_35, R.id.grid_cell_36, R.id.grid_cell_37, R.id.grid_cell_38, R.id.grid_cell_39,
+            R.id.grid_cell_40, R.id.grid_cell_41, R.id.grid_cell_42, R.id.grid_cell_43, R.id.grid_cell_44,
+            R.id.grid_cell_45, R.id.grid_cell_46, R.id.grid_cell_47, R.id.grid_cell_48
         )
 
         @JvmStatic
@@ -48,7 +52,12 @@ class GitHubWidgetProvider : AppWidgetProvider() {
         appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it) }
     }
 
-    override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle?) {
+    override fun onAppWidgetOptionsChanged(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int,
+        newOptions: Bundle?
+    ) {
         updateAppWidget(context, appWidgetManager, appWidgetId)
     }
 
@@ -56,7 +65,9 @@ class GitHubWidgetProvider : AppWidgetProvider() {
         super.onReceive(context, intent)
         if (intent.action == ACTION_UPDATE_WIDGET) {
             val appWidgetManager = AppWidgetManager.getInstance(context)
-            val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, GitHubWidgetProvider::class.java))
+            val appWidgetIds = appWidgetManager.getAppWidgetIds(
+                ComponentName(context, GitHubWidgetProvider::class.java)
+            )
             onUpdate(context, appWidgetManager, appWidgetIds)
         }
     }
@@ -65,6 +76,7 @@ class GitHubWidgetProvider : AppWidgetProvider() {
     private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
         val views = RemoteViews(context.packageName, R.layout.widget_layout)
 
+        // 리프레시 버튼
         val refreshIntent = Intent(context, GitHubWidgetProvider::class.java).apply {
             action = ACTION_UPDATE_WIDGET
         }
@@ -73,6 +85,7 @@ class GitHubWidgetProvider : AppWidgetProvider() {
         )
         views.setOnClickPendingIntent(R.id.refresh_button, refreshPendingIntent)
 
+        // 메인 액티비티 클릭 이동
         val mainActivityIntent = Intent(context, MainActivity::class.java)
         val mainActivityPendingIntent = PendingIntent.getActivity(
             context, 0, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE
@@ -84,10 +97,16 @@ class GitHubWidgetProvider : AppWidgetProvider() {
                 val repository = GitHubRepository()
                 val contributionData = repository.getUserContributions(GITHUB_USERNAME)
 
+                // 🎯 연도별 정확한 totalContributions GraphQL로 가져오기
+                val year = LocalDate.now().year
+                val total = repository.getTotalContributionsForYear(GITHUB_USERNAME, year)
+                val gridData = repository.getContributionGridForYear(GITHUB_USERNAME, year)
+                updateContributionGrid(context, views, gridData)
+
                 CoroutineScope(Dispatchers.Main).launch {
                     views.setTextViewText(R.id.widget_title, "$GITHUB_USERNAME 컨트리뷰션")
                     views.setTextViewText(R.id.today_contributions, contributionData.todayContributions.toString())
-                    views.setTextViewText(R.id.total_contributions, contributionData.totalContributions.toString())
+                    views.setTextViewText(R.id.total_contributions, total.toString())
 
                     updateContributionGrid(context, views, contributionData.contributionsByDay)
                     appWidgetManager.updateAppWidget(appWidgetId, views)
@@ -111,17 +130,17 @@ class GitHubWidgetProvider : AppWidgetProvider() {
             val dateStr = date.format(formatter)
             val contributions = contributionsData[dateStr] ?: 0
 
-            val colorResId = when {
-                contributions == 0 -> android.R.color.darker_gray
-                contributions < 3 -> R.color.github_green_light
-                contributions < 5 -> R.color.github_green_medium
-                contributions < 10 -> R.color.github_green_dark
-                else -> R.color.github_green_extreme
+            val color = when {
+                contributions == 0 -> Color.parseColor("#EEEEEE")
+                contributions < 3 -> Color.parseColor("#9BE9A8")
+                contributions < 5 -> Color.parseColor("#40C463")
+                contributions < 10 -> Color.parseColor("#30A14E")
+                else -> Color.parseColor("#216E39")
             }
 
-            views.setInt(cellIds[i], "setBackgroundResource", colorResId)
+            views.setInt(cellIds[i], "setBackgroundColor", color)
+
+            Log.d(TAG, "💡 [$dateStr] => count: $contributions → colorInt: $color")
         }
     }
-
-
 }

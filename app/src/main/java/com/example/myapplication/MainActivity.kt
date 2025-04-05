@@ -2,10 +2,8 @@ package com.example.myapplication
 
 import android.content.Context
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.view.View
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +18,7 @@ import com.example.myapplication.api.GitHubApiClient
 import com.example.myapplication.repository.GitHubRepository
 import com.example.myapplication.util.Constants
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -38,6 +37,8 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val PREFS_NAME = "GitHubWidgetPrefs"
         private const val KEY_USERNAME = "username"
+        private lateinit var yearSpinner: Spinner
+        private var selectedYear = LocalDate.now().year
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,6 +93,23 @@ class MainActivity : AppCompatActivity() {
         btnSetToken.setOnClickListener {
             showSetTokenDialog()
         }
+
+        yearSpinner = findViewById(R.id.year_spinner)
+        val currentYear = LocalDate.now().year
+        val years = (currentYear downTo (currentYear - 5)).toList()
+        val yearAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, years)
+        yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        yearSpinner.adapter = yearAdapter
+
+        yearSpinner.setSelection(0) // 기본은 현재 연도
+        yearSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                selectedYear = years[position]
+                loadGitHubData()  // 연도 선택 시 다시 로드
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
     }
 
     private fun loadGitHubData() {
@@ -104,15 +122,14 @@ class MainActivity : AppCompatActivity() {
                 val repos = gitHubRepository.getUserRepositories(username)
                 adapter.submitList(repos)
 
-                // 컨트리뷰션 데이터 불러오기
                 val contributionData = gitHubRepository.getUserContributions(username)
-
-                // UI 업데이트
                 tvTodayContributions.text = contributionData.todayContributions.toString()
-                tvTotalContributions.text = contributionData.totalContributions.toString()
-                
-                // 컨트리뷰션 그리드 업데이트
-                contributionGridView.setContributionData(contributionData.contributionsByDay)
+
+                val totalContributions = gitHubRepository.getTotalContributionsForYear(username, selectedYear)
+                tvTotalContributions.text = totalContributions.toString()
+
+                val gridData = gitHubRepository.getContributionGridForYear(username, selectedYear)
+                contributionGridView.setContributionData(gridData)
 
                 // 성공 메시지
                 Toast.makeText(this@MainActivity,

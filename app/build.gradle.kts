@@ -1,3 +1,5 @@
+import java.util.*
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -17,13 +19,11 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // local.properties에서 토큰 읽기
-        val props = java.util.Properties().apply {
+        val props = Properties().apply {
             load(project.rootProject.file("local.properties").inputStream())
         }
         val githubToken = props.getProperty("GITHUB_API_TOKEN") ?: ""
 
-        // BuildConfig에 주입
         buildConfigField("String", "GITHUB_API_TOKEN", "\"$githubToken\"")
     }
 
