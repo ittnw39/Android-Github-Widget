@@ -5,7 +5,7 @@ package com.example.myapplication.util
  */
 object Constants {
     // GitHub API 토큰
-    const val GITHUB_API_TOKEN = "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"
+    const val GITHUB_API_TOKEN = ""
     
     // 기본 GitHub 사용자 이름
     const val DEFAULT_GITHUB_USERNAME = "ittnw39"
