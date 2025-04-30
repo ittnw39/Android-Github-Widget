@@ -1,0 +1,155 @@
+<!-- res/layout/activity_main.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="16dp">
+
+    <Spinner
+            android:id="@+id/year_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+    />
+    <!-- 타이틀 -->
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GitHub 컨트리뷰션"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+    <!-- 컨트리뷰션 정보 카드 -->
+    <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:elevation="4dp">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+            <!-- 스크롤 가능한 컨트리뷰션 그래프 -->
+            <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none">
+
+                <com.example.myapplication.ContributionGridView
+                        android:id="@+id/contribution_grid_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp" />
+            </HorizontalScrollView>
+
+            <!-- 오늘 컨트리뷰션 -->
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="오늘 컨트리뷰션:"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                <TextView
+                        android:id="@+id/today_contributions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- 전체 컨트리뷰션 -->
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="전체 컨트리뷰션:"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                <TextView
+                        android:id="@+id/total_contributions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- 버튼 영역 -->
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
+
+        <!-- 상단 버튼 영역 -->
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+            <!-- 새로고침 버튼 -->
+            <Button
+                    android:id="@+id/btn_refresh"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="새로고침"
+                    android:layout_marginEnd="8dp" />
+
+            <!-- 사용자 변경 버튼 -->
+            <Button
+                    android:id="@+id/btn_change_user"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="사용자 변경" />
+        </LinearLayout>
+
+        <!-- 토큰 설정 버튼 제거 -->
+        <!--
+        <Button
+                android:id="@+id/btn_set_token"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="GitHub 토큰 설정" />
+        -->
+    </LinearLayout>
+
+    <!-- 리포지토리 목록 타이틀 -->
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="리포지토리 목록"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+    <!-- 리포지토리 목록 -->
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+</LinearLayout>
