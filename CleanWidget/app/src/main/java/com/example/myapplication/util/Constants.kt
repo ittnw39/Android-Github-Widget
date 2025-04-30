@@ -8,7 +8,7 @@ object Constants {
 //    const val GITHUB_API_TOKEN = ""
 
     // 기본 GitHub 사용자 이름
-    const val DEFAULT_GITHUB_USERNAME = "ittnw39"
+    const val DEFAULT_GITHUB_USERNAME = ""
     
     // GitHub API 기본 URL
     const val GITHUB_API_BASE_URL = "https://api.github.com/"

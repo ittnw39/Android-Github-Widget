@@ -23,7 +23,7 @@ class GitHubWidgetProvider : AppWidgetProvider() {
     companion object {
         private const val TAG = "GitHubWidgetProvider"
         const val ACTION_UPDATE_WIDGET = "com.example.myapplication.ACTION_UPDATE_WIDGET"
-        var GITHUB_USERNAME = "ittnw39"
+        var GITHUB_USERNAME = ""
         private const val MAX_DAYS = 49
 
         val cellIds = listOf(
@@ -95,23 +95,23 @@ class GitHubWidgetProvider : AppWidgetProvider() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val repository = GitHubRepository()
-                val contributionData = repository.getUserContributions(GITHUB_USERNAME)
-
-                // 🎯 연도별 정확한 totalContributions GraphQL로 가져오기
                 val year = LocalDate.now().year
-                val total = repository.getTotalContributionsForYear(GITHUB_USERNAME, year)
-                val gridData = repository.getContributionGridForYear(GITHUB_USERNAME, year)
-                updateContributionGrid(context, views, gridData)
+                // GraphQL 통합 호출로 연도별 데이터 가져오기
+                val (totalCount, contributionsByDay) = repository.getContributionYearData(GITHUB_USERNAME, year)
+                updateContributionGrid(context, views, contributionsByDay)
 
                 CoroutineScope(Dispatchers.Main).launch {
                     views.setTextViewText(R.id.widget_title, "$GITHUB_USERNAME 컨트리뷰션")
-                    views.setTextViewText(R.id.today_contributions, contributionData.todayContributions.toString())
-                    views.setTextViewText(R.id.total_contributions, total.toString())
+                    // 오늘 컨트리뷰션 수
+                    val todayDate = LocalDate.now().format(DateTimeFormatter.ISO_DATE)
+                    val todayCount = contributionsByDay[todayDate] ?: 0
+                    views.setTextViewText(R.id.today_contributions, todayCount.toString())
+                    views.setTextViewText(R.id.total_contributions, totalCount.toString())
 
-                    updateContributionGrid(context, views, contributionData.contributionsByDay)
+                    updateContributionGrid(context, views, contributionsByDay)
                     appWidgetManager.updateAppWidget(appWidgetId, views)
 
-                    if (!contributionData.hasTodayContributions()) {
+                    if (!contributionsByDay.containsKey(LocalDate.now().format(DateTimeFormatter.ISO_DATE)) || (contributionsByDay[LocalDate.now().format(DateTimeFormatter.ISO_DATE)] ?: 0) == 0) {
                         NotificationUtils.showContributionReminder(context)
                     }
                 }

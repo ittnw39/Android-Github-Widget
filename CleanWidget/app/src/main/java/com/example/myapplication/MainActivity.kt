@@ -19,6 +19,7 @@ import com.example.myapplication.repository.GitHubRepository
 import com.example.myapplication.util.Constants
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
@@ -115,24 +116,34 @@ class MainActivity : AppCompatActivity() {
                 val repos = gitHubRepository.getUserRepositories(username)
                 adapter.submitList(repos)
 
-                val contributionData = gitHubRepository.getUserContributions(username)
-                tvTodayContributions.text = contributionData.todayContributions.toString()
+                // GraphQL 통합 호출로 연도별 컨트리뷰션 데이터 가져오기
+                val (totalCount, contributionsByDay) = gitHubRepository.getContributionYearData(
+                    username,
+                    selectedYear
+                )
 
-                val totalContributions = gitHubRepository.getTotalContributionsForYear(username, selectedYear)
-                tvTotalContributions.text = totalContributions.toString()
+                // 오늘 날짜 컨트리뷰션 수 추출
+                val todayDate = LocalDate.now().format(DateTimeFormatter.ISO_DATE)
+                val todayCount = contributionsByDay[todayDate] ?: 0
 
-                val gridData = gitHubRepository.getContributionGridForYear(username, selectedYear)
-                contributionGridView.setContributionData(gridData)
+                // UI 업데이트
+                tvTodayContributions.text = todayCount.toString()
+                tvTotalContributions.text = totalCount.toString()
+                contributionGridView.setContributionData(contributionsByDay)
 
                 // 성공 메시지
-                Toast.makeText(this@MainActivity,
+                Toast.makeText(
+                    this@MainActivity,
                     "GitHub 데이터가 업데이트되었습니다",
-                    Toast.LENGTH_SHORT).show()
+                    Toast.LENGTH_SHORT
+                ).show()
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(this@MainActivity,
+                Toast.makeText(
+                    this@MainActivity,
                     "데이터 로드 실패: ${e.message}",
-                    Toast.LENGTH_LONG).show()
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -199,8 +210,47 @@ class MainActivity : AppCompatActivity() {
             username = savedUsername
             GitHubWidgetProvider.GITHUB_USERNAME = savedUsername
         } else {
-            // 기본값이 설정되지 않았다면 Constants 값 사용
-            GitHubWidgetProvider.GITHUB_USERNAME = username
+            // 저장된 사용자명이 없으면 입력 다이얼로그 표시
+            showFirstTimeUsernameDialog()
         }
+    }
+
+    private fun showFirstTimeUsernameDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_change_username, null)
+        val etUsername = dialogView.findViewById<EditText>(R.id.et_username)
+        
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("GitHub 사용자명 입력")
+            .setMessage("GitHub Contribution을 표시할 사용자명을 입력해주세요.")
+            .setView(dialogView)
+            .setCancelable(false) // 뒤로가기 버튼으로 닫기 방지
+            .setPositiveButton("확인", null) // 나중에 리스너 설정
+            .create()
+        
+        // 다이얼로그가 표시된 후 버튼 동작 설정
+        dialog.setOnShowListener {
+            val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            positiveButton.setOnClickListener {
+                val newUsername = etUsername.text.toString().trim()
+                if (newUsername.isNotEmpty()) {
+                    // 사용자명 저장 및 적용
+                    username = newUsername
+                    saveUsername(newUsername)
+                    GitHubWidgetProvider.GITHUB_USERNAME = newUsername
+                    
+                    // 데이터 로드
+                    loadGitHubData()
+                    GitHubWidgetProvider.updateWidgets(this@MainActivity)
+                    
+                    // 다이얼로그 닫기
+                    dialog.dismiss()
+                } else {
+                    // 빈 입력 시 에러 메시지 표시
+                    Toast.makeText(this@MainActivity, "사용자명을 입력해주세요", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        
+        dialog.show()
     }
 }

@@ -22,9 +22,9 @@ android {
         val props = Properties().apply {
             load(project.rootProject.file("local.properties").inputStream())
         }
-        val githubToken = props.getProperty("GITHUB_API_TOKEN") ?: ""
+        val githubToken = props.getProperty("github.token") ?: ""
 
-        buildConfigField("String", "GITHUB_API_TOKEN", "\"$githubToken\"")
+        buildConfigField("String", "GITHUB_TOKEN", "\"$githubToken\"")
     }
 
     buildFeatures {

@@ -55,106 +55,20 @@ class GitHubRepository {
     }
     
     /**
-     * 사용자의 컨트리뷰션 데이터 조회
-     * REST API를 사용하여 사용자의 최근 활동을 조회하고 컨트리뷰션으로 계산합니다.
-     * @param username 사용자 이름 (비어있으면 기본값 사용)
-     * @return 컨트리뷰션 데이터
+     * GraphQL을 사용하여 연도별 전체 컨트리뷰션과 날짜별 컨트리뷰션 맵을 한 번에 조회합니다.
+     * @param username GitHub 사용자 이름
+     * @param year 조회할 연도
+     * @return Pair(전체 컨트리뷰션 수, 날짜별 컨트리뷰션 맵)
      */
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun getUserContributions(username: String = Constants.DEFAULT_GITHUB_USERNAME): ContributionData {
-        val response = apiService.getUserEvents(
-            username = username
-        )
-        
-        if (!response.isSuccessful) {
-            // 👇 실패 이유 로그 추가
-            val errorBody = response.errorBody()?.string()
-            println("⚠️ GitHub API 호출 실패: code=${response.code()}, error=$errorBody")
-            return ContributionData(0, 0, emptyMap())
-        }
-        
-        val events = response.body() ?: emptyList()
-        
-        // 이벤트 데이터에서 컨트리뷰션 맵 생성
-        val contributionsByDay = calculateContributionsFromEvents(events)
-        
-        return ContributionHelper.parseContributions(contributionsByDay)
-    }
-    
-    /**
-     * 이벤트 데이터로부터 날짜별 컨트리뷰션 수 계산
-     * @param events GitHub 이벤트 목록
-     * @return 날짜별 컨트리뷰션 수 맵 (ISO 날짜 형식 -> 컨트리뷰션 수)
-     */
-    private fun calculateContributionsFromEvents(events: List<Map<String, Any>>): Map<String, Int> {
-        val result = mutableMapOf<String, Int>()
-        val formatter = DateTimeFormatter.ISO_DATE
-        val today = LocalDate.now()
-        
-        // 최근 30일 동안의 날짜를 초기화 (모든 날짜가 표시되도록)
-        for (i in 0 until 30) {
-            val date = today.minusDays(i.toLong())
-            result[date.format(formatter)] = 0
-        }
-        
-        // 이벤트 처리 및 컨트리뷰션 집계
-        events.forEach { event ->
-            val type = event["type"] as? String
-            val createdAt = event["created_at"] as? String
-            
-            if (type != null && createdAt != null) {
-                // GitHub 타임스탬프에서 날짜 부분만 추출 (yyyy-MM-dd)
-                val datePart = createdAt.substring(0, 10)
-                
-                // PushEvent, CreateEvent, PullRequestEvent 등 관련 이벤트를 컨트리뷰션으로 계산
-                if (type in listOf("PushEvent", "CreateEvent", "PullRequestEvent", "IssuesEvent", "CommitCommentEvent")) {
-                    result[datePart] = (result[datePart] ?: 0) + 1
-                }
-            }
-        }
-        
-        return result
-    }
-
-    suspend fun getContributionGridForYear(username: String, year: Int): Map<String, Int> {
+    suspend fun getContributionYearData(
+        username: String = Constants.DEFAULT_GITHUB_USERNAME,
+        year: Int = LocalDate.now().year
+    ): Pair<Int, Map<String, Int>> {
         val query = """
         {
-          user(login: "$username") {
-            contributionsCollection(from: "$year-01-01T00:00:00Z", to: "$year-12-31T23:59:59Z") {
-              contributionCalendar {
-                weeks {
-                  contributionDays {
-                    date
-                    contributionCount
-                  }
-                }
-              }
-            }
-          }
-        }
-    """.trimIndent()
-
-        val response = GitHubApiClient.graphqlService.queryGraphQL(mapOf("query" to query))
-
-        return if (response.isSuccessful) {
-            val map = mutableMapOf<String, Int>()
-            response.body()?.data?.user?.contributionsCollection?.contributionCalendar?.weeks?.forEach { week ->
-                week.contributionDays.forEach { day ->
-                    map[day.date] = day.contributionCount
-                }
-            }
-            map
-        } else {
-            println("❌ GraphQL 실패: ${response.errorBody()?.string()}")
-            emptyMap()
-        }
-    }
-
-    suspend fun getContributionCalendarData(username: String, year: Int): Pair<Int, Map<String, Int>> {
-        val query = """
-        {
-          user(login: "$username") {
-            contributionsCollection(from: "$year-01-01T00:00:00Z", to: "$year-12-31T23:59:59Z") {
+          user(login: "${username}") {
+            contributionsCollection(from: "${year}-01-01T00:00:00Z", to: "${year}-12-31T23:59:59Z") {
               contributionCalendar {
                 totalContributions
                 weeks {
@@ -170,43 +84,19 @@ class GitHubRepository {
     """.trimIndent()
 
         val response = GitHubApiClient.graphqlService.queryGraphQL(mapOf("query" to query))
-        if (response.isSuccessful) {
-            val calendar = response.body()?.data?.user?.contributionsCollection?.contributionCalendar
-            val dayMap = mutableMapOf<String, Int>()
-            calendar?.weeks?.forEach { week ->
-                week.contributionDays.forEach { day ->
-                    dayMap[day.date] = day.contributionCount
-                }
-            }
-            return (calendar?.totalContributions ?: 0) to dayMap
-        } else {
-            println("❌ GraphQL 실패: ${response.errorBody()?.string()}")
+        if (!response.isSuccessful) {
+            println("❌ GraphQL 실패 (getContributionYearData): ${response.errorBody()?.string()}")
             return 0 to emptyMap()
         }
-    }
-
-    suspend fun getTotalContributionsForYear(username: String, year: Int): Int {
-        val query = """
-        {
-          user(login: "$username") {
-            contributionsCollection(from: "$year-01-01T00:00:00Z", to: "$year-12-31T23:59:59Z") {
-              contributionCalendar {
-                totalContributions
-              }
+        val calendar = response.body()?.data?.user?.contributionsCollection?.contributionCalendar
+        val total = calendar?.totalContributions ?: 0
+        val dayMap = mutableMapOf<String, Int>()
+        calendar?.weeks?.forEach { week ->
+            week.contributionDays.forEach { day ->
+                dayMap[day.date] = day.contributionCount
             }
-          }
         }
-    """.trimIndent()
-
-        val response = GitHubApiClient.graphqlService.queryGraphQL(mapOf("query" to query))
-
-        return if (response.isSuccessful) {
-            response.body()?.data?.user?.contributionsCollection?.contributionCalendar?.totalContributions ?: 0
-        } else {
-            println("❌ GraphQL 실패 (totalContributions): ${response.errorBody()?.string()}")
-            0
-        }
+        return total to dayMap
     }
-
 
 } 

@@ -12,12 +12,33 @@ Android-Github-Widget
 - 홈 화면 위젯으로 간편하게 확인
 - 주기적 자동 데이터 동기화
 - 오늘의 컨트리뷰션이 없을 경우 알림 기능 (옵션)
+- 연도별 컨트리뷰션 데이터 확인 기능
+- API 호출 최적화로 효율적인 데이터 로딩
 
-## 사용자 변경 방법
+## 첫 실행 및 사용자 변경
 
-1. 앱을 실행합니다.
-2. 메인 화면에서 "사용자 변경" 버튼을 탭합니다.
-3. 조회하고 싶은 GitHub 사용자 이름을 입력하고 "저장" 버튼을 탭합니다.
+1. 앱을 처음 실행하면 GitHub 사용자 이름 입력 창이 나타납니다.
+2. 원하는 GitHub 사용자 이름을 입력하면 해당 사용자의 컨트리뷰션 데이터가 로드됩니다.
+3. 사용자 변경은 메인 화면의 "사용자 변경" 버튼을 통해 언제든지 가능합니다.
+4. 한 번 설정한 사용자 이름은 앱을 재시작해도 유지됩니다.
+
+## 개발자 정보
+
+### API 인증 설정 (개발자용)
+
+앱은 GitHub API를 사용하여 데이터를 가져옵니다. GitHub API는 인증 없이도 사용할 수 있지만 시간당 요청 제한(60회)이 있습니다. 개발 또는 테스트 시 이 제한에 빠르게 도달할 수 있으므로, 개발자 모드에서는 개인 액세스 토큰(PAT)을 사용하는 것이 좋습니다.
+
+1. GitHub에서 개인 액세스 토큰 발급:
+   - GitHub 계정 → Settings → Developer settings → Personal access tokens → Tokens (classic)
+   - Generate new token (classic) 선택
+   - 권한: `read:user` 선택 (최소 권한만 부여)
+
+2. 토큰 설정 방법:
+   - `local.properties` 파일에 다음 라인 추가:
+     ```
+     github.token=YOUR_TOKEN_HERE
+     ```
+   - 이 파일은 .gitignore에 포함되어 있어 저장소에 업로드되지 않습니다.
 
 ## 프로젝트 구조 및 구성 요소
 
@@ -49,8 +70,8 @@ app/src/main/java/com/example/myapplication/
 ### 주요 컴포넌트 역할
 
 #### 1. API 통신 계층
-- **GitHubApiClient**: Retrofit을 사용하여 GitHub API 서버와 통신하도록 설정하는 객체입니다.
-- **GitHubService**: GitHub REST API 엔드포인트 (사용자 정보, 저장소 목록, 이벤트 조회)를 정의한 인터페이스입니다.
+- **GitHubApiClient**: Retrofit을 사용하여 GitHub API 서버와 통신하도록 설정하는 객체입니다. 개발자 토큰이 설정된 경우 인증 헤더를 추가합니다.
+- **GitHubService**: GitHub REST API 엔드포인트 (사용자 정보, 저장소 목록)를 정의한 인터페이스입니다.
 - **GitHubGraphQLService**: GitHub GraphQL API 엔드포인트 (컨트리뷰션 데이터 조회)를 정의한 인터페이스입니다.
 
 #### 2. 데이터 모델
@@ -59,7 +80,7 @@ app/src/main/java/com/example/myapplication/
 - **ContributionData**: 사용자의 컨트리뷰션 통계 정보를 담는 데이터 클래스입니다.
 
 #### 3. 데이터 처리 계층
-- **GitHubRepository**: API 호출 및 응답 처리 기능을 제공합니다. REST API 및 GraphQL API를 모두 사용하여 데이터를 가져오고, 컨트리뷰션 계산 로직도 포함합니다.
+- **GitHubRepository**: API 호출 및 응답 처리 기능을 제공합니다. GraphQL API를 사용하여 효율적으로 컨트리뷰션 데이터를 가져옵니다.
 - **ContributionHelper**: 컨트리뷰션 데이터 처리를 위한 유틸리티 메서드를 제공합니다.
 
 #### 4. UI 컴포넌트
@@ -73,17 +94,22 @@ app/src/main/java/com/example/myapplication/
 - **NotificationUtils**: 알림 채널 생성 및 알림 표시 기능을 제공합니다.
 
 #### 6. 유틸리티
-- **Constants**: 기본 사용자명, API 기본 URL 등의 상수를 저장합니다. (API 토큰 상수는 제거됨)
+- **Constants**: API 기본 URL 등의 상수를 저장합니다.
 
-### 데이터 흐름
+### 최근 개선사항
 
-1. **사용자 인터랙션**: 사용자가 MainActivity에서 새로고침, 사용자명 변경 등의 작업을 수행합니다.
-2. **데이터 요청**: MainActivity는 GitHubRepository를 통해 데이터를 요청합니다.
-3. **API 호출**: GitHubRepository는 GitHubApiClient, GitHubService, GitHubGraphQLService를 사용하여 GitHub API (REST 및 GraphQL)를 호출합니다.
-4. **데이터 처리**: 받아온 데이터는 적절한 모델 객체로 변환되어 MainActivity로 전달됩니다.
-5. **UI 업데이트**: MainActivity는 받은 데이터로 UI (컨트리뷰션 그래프, 텍스트, 리포지토리 목록)를 업데이트합니다.
-6. **위젯 업데이트**: GitHubWidgetProvider가 주기적으로 또는 수동으로 위젯을 업데이트합니다.
-7. **백그라운드 동기화**: GitHubSyncWorker가 주기적으로 데이터를 동기화하고 필요시 알림을 표시합니다.
+1. **API 호출 최적화**:
+   - 여러 개의 API 호출을 하나의 GraphQL 쿼리로 통합하여 효율성 향상
+   - 연간 컨트리뷰션 데이터를 한 번의 호출로 가져오는 `getContributionYearData` 메서드 구현
+
+2. **개발자 토큰 지원**:
+   - API 속도 제한 문제 해결을 위한 개발자 토큰 지원 추가
+   - BuildConfig를 통한 안전한 토큰 관리
+
+3. **사용자 경험 개선**:
+   - 첫 실행 시 사용자명 입력 다이얼로그 자동 표시
+   - 하드코딩된 사용자명 제거로 앱 범용성 향상
+   - 연도 선택 기능으로 과거 컨트리뷰션 조회 가능
 
 ### 기술 스택
 
@@ -93,3 +119,7 @@ app/src/main/java/com/example/myapplication/
 - **백그라운드 작업**: WorkManager
 - **JSON 파싱**: Gson
 - **UI 컴포넌트**: AndroidX (RecyclerView, CardView, Spinner), Custom View 
+
+## 라이선스
+
+이 프로젝트는 MIT 라이선스 하에 배포됩니다. 

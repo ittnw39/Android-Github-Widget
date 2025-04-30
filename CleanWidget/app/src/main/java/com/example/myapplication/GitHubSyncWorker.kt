@@ -7,6 +7,7 @@ import androidx.work.WorkerParameters
 import com.example.myapplication.repository.GitHubRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -27,14 +28,18 @@ class GitHubSyncWorker(context: Context, workerParams: WorkerParameters) : Corou
             // GitHub 리포지토리 인스턴스 생성
             val repository = GitHubRepository()
             
-            // 컨트리뷰션 데이터 가져오기
-            val contributionData = repository.getUserContributions(GitHubWidgetProvider.GITHUB_USERNAME)
+            // 컨트리뷰션 데이터 가져오기 (GraphQL 통합 호출 사용)
+            val year = LocalDate.now().year
+            val (totalCount, contributionsByDay) = repository.getContributionYearData(GitHubWidgetProvider.GITHUB_USERNAME, year)
             
             // 위젯 업데이트
             GitHubWidgetProvider.updateWidgets(applicationContext)
             
             // 오늘 컨트리뷰션이 없으면 알림 생성
-            if (!contributionData.hasTodayContributions()) {
+            val todayDate = LocalDate.now().format(DateTimeFormatter.ISO_DATE)
+            val todayCount = contributionsByDay[todayDate] ?: 0
+            
+            if (todayCount == 0) {
                 // 마지막 알림 시간 확인
                 val lastNotificationTime = getLastNotificationTime()
                 val now = System.currentTimeMillis()
