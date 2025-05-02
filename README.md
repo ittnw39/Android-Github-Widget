@@ -10,18 +10,19 @@ Android-Github-Widget
 ## 기능
 
 - GitHub 사용자 이름만으로 컨트리뷰션 현황 확인
-- 홈 화면 위젯으로 간편하게 확인
-- 주기적 자동 데이터 동기화
-- 오늘의 컨트리뷰션이 없을 경우 알림 기능 (옵션)
+- 홈 화면 위젯으로 간편하게 확인 (**다양한 크기 지원: 1x1, 2x1, 3x1, 4x1, 4x2, 4x3**)
+- 주기적 자동 데이터 동기화 (WorkManager 사용)
+- 오늘의 컨트리뷰션이 없을 경우 알림 기능 (**예정**)
 - 연도별 컨트리뷰션 데이터 확인 기능
 - API 호출 최적화로 효율적인 데이터 로딩
 
 ## 첫 실행 및 사용자 변경
 
-1. 앱을 처음 실행하면 GitHub 사용자 이름 입력 창이 나타납니다.
-2. 원하는 GitHub 사용자 이름을 입력하면 해당 사용자의 컨트리뷰션 데이터가 로드됩니다.
-3. 사용자 변경은 메인 화면의 "사용자 변경" 버튼을 통해 언제든지 가능합니다.
-4. 한 번 설정한 사용자 이름은 앱을 재시작해도 유지됩니다.
+1. 위젯을 처음 추가하면 GitHub 사용자 이름 설정 화면이 나타납니다.
+2. 원하는 GitHub 사용자 이름을 입력하고 저장하면 위젯이 생성됩니다.
+3. 위젯을 클릭하면 사용자 이름 설정 화면이 다시 나타납니다.
+4. 사용자 변경은 앱 메인 화면의 "사용자 변경" 버튼을 통해서도 가능합니다.
+5. 한 번 설정한 사용자 이름은 앱과 모든 위젯에 공유되어 유지됩니다.
 
 ## 개발자 정보
 
@@ -69,8 +70,14 @@ app/src/main/java/com/example/myapplication/
 │   └── GitHubSyncWorker.kt  - 백그라운드 동기화 작업
 ├── ContributionData.kt  - 컨트리뷰션 데이터 모델 (앱 내부 사용)
 ├── ContributionHelper.kt - 컨트리뷰션 데이터 처리 도우미
-├── GitHubWidgetProvider.kt - 앱 위젯 제공자
-└── MainActivity.kt      - 메인 액티비티
+├── GitHubWidgetProvider1x1.kt - 1x1 위젯 제공자
+├── GitHubWidgetProvider2x1.kt - 2x1 위젯 제공자
+├── GitHubWidgetProvider3x1.kt - 3x1 위젯 제공자
+├── GitHubWidgetProvider4x1.kt - 4x1 위젯 제공자
+├── GitHubWidgetProvider4x2.kt - 4x2 위젯 제공자
+├── GitHubWidgetProvider4x3.kt - 4x3 위젯 제공자
+├── MainActivity.kt      - 메인 액티비티
+└── WidgetConfigureActivity.kt - 위젯 설정 액티비티
 ```
 
 ### 주요 컴포넌트 역할
@@ -93,11 +100,12 @@ app/src/main/java/com/example/myapplication/
 - **MainActivity**: 앱의 주 화면입니다. 사용자 컨트리뷰션 그래프, 오늘/전체 컨트리뷰션 수, 리포지토리 목록을 표시하고, 사용자 변경 기능을 제공합니다.
 - **RepoAdapter**: RecyclerView에 GitHub 저장소 목록을 표시하는 어댑터입니다.
 - **ContributionGridView**: 컨트리뷰션 데이터를 시각적인 그리드 형태로 표시하는 커스텀 뷰입니다.
-- **GitHubWidgetProvider**: 홈 화면에 컨트리뷰션 현황 위젯을 제공하는 컴포넌트입니다.
+- **GitHubWidgetProvider***: 각 크기별 홈 화면 위젯을 제공하고 업데이트하는 컴포넌트입니다. (1x1, 2x1, 3x1, 4x1, 4x2, 4x3)
+- **WidgetConfigureActivity**: 위젯을 처음 추가할 때 사용자 이름을 설정하는 액티비티입니다.
 
 #### 5. 백그라운드 작업
 - **GitHubSyncWorker**: WorkManager를 사용하여 주기적으로 GitHub 데이터를 동기화하는 작업자입니다.
-- **NotificationUtils**: 알림 채널 생성 및 알림 표시 기능을 제공합니다.
+- **NotificationUtils**: 알림 채널 생성 기능을 제공합니다. (알림 표시 기능은 추후 구현 예정)
 
 #### 6. 유틸리티
 - **Constants**: API 기본 URL 등의 상수를 저장합니다.
@@ -113,8 +121,10 @@ app/src/main/java/com/example/myapplication/
    - BuildConfig를 통한 안전한 토큰 관리
 
 3. **사용자 경험 개선**:
-   - 첫 실행 시 사용자명 입력 다이얼로그 자동 표시
-   - 하드코딩된 사용자명 제거로 앱 범용성 향상
+   - 위젯 처음 추가 시 사용자명 설정 기능 추가
+   - 위젯 클릭 시 사용자명 변경 화면 바로 표시
+   - 다양한 위젯 크기 지원 (1x1 ~ 4x3)
+   - 위젯 그래프 요일 정렬 및 표시 기간 확장
    - 연도 선택 기능으로 과거 컨트리뷰션 조회 가능
 
 ### 기술 스택

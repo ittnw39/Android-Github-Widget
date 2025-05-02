@@ -15,6 +15,21 @@
           <theme>@style/Theme.MyApplication</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/github_widget_1x1.xml">
+        <config>
+          <theme>@style/Theme.MyApplication</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/github_widget_2x1.xml">
+        <config>
+          <theme>@style/Theme.MyApplication</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/github_widget_3x1.xml">
+        <config>
+          <theme>@style/Theme.MyApplication</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/github_widget_4x1.xml">
         <config>
           <theme>@style/Theme.MyApplication</theme>
@@ -42,8 +57,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4bc18caf-74ad-4eb8-afe3-847c936aaa11" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TASK_LIST.md" beforeDir="false" afterPath="$PROJECT_DIR$/TASK_LIST.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,34 +124,39 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Android App.My_Application.app.executor&quot;: &quot;Run&quot;,
-    &quot;Android App.app.executor&quot;: &quot;Run&quot;,
-    &quot;Kotlin script (Beta).build.gradle.kts (1).executor&quot;: &quot;Run&quot;,
-    &quot;Kotlin script (Beta).build.gradle.kts.executor&quot;: &quot;Run&quot;,
-    &quot;PROJECT_TRUSTED_KEY&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;android-custom-viewC:/Android-Github-Widget/CleanWidget/app/src/main/java/com/example/myapplication/ContributionGridView.kt_SELECTED&quot;: &quot;ContributionGridView&quot;,
-    &quot;android-custom-viewC:/Android-Github-Widget/app/src/main/java/com/example/myapplication/ContributionGridView.kt_SELECTED&quot;: &quot;ContributionGridView&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/ittnw/OneDrive/바탕 화면/패턴/Pattern/0428/graphicsEditor_0421&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.android.tools.idea.logcat.settings.LogcatApplicationSettingsConfigurableProvider&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Android App.My_Application.app.executor": "Run",
+    "Android App.app.executor": "Run",
+    "Kotlin script (Beta).build.gradle.kts (1).executor": "Run",
+    "Kotlin script (Beta).build.gradle.kts.executor": "Run",
+    "PROJECT_TRUSTED_KEY": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "ScreenshotViewer.SavePath": "C:/Android-Github-Widget/CleanWidget",
+    "android-custom-viewC:/Android-Github-Widget/CleanWidget/app/src/main/java/com/example/myapplication/ContributionGridView.kt_SELECTED": "ContributionGridView",
+    "android-custom-viewC:/Android-Github-Widget/app/src/main/java/com/example/myapplication/ContributionGridView.kt_SELECTED": "ContributionGridView",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Android-Github-Widget/CleanWidget",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "com.android.tools.idea.logcat.settings.LogcatApplicationSettingsConfigurableProvider",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;kotlin-gradle-user-dirs&quot;: [
-      &quot;C:\\Users\\ittnw\\OneDrive\\바탕 화면\\memory&quot;,
-      &quot;C:\\Users\\ittnw\\.gradle&quot;
+  "keyToStringList": {
+    "android-custom-viewC:/Android-Github-Widget/CleanWidget/app/src/main/java/com/example/myapplication/ContributionGridView.kt_ContributionGridView_DIMENSIONS": [
+      "1080",
+      "1920"
+    ],
+    "kotlin-gradle-user-dirs": [
+      "C:\\Users\\ittnw\\OneDrive\\바탕 화면\\memory",
+      "C:\\Users\\ittnw\\.gradle"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CreateKotlinClassDialog.RecentsKey">
       <recent name="com.example.myapplication" />
@@ -288,7 +308,7 @@
       <workItem from="1745918031757" duration="35000" />
       <workItem from="1746013252329" duration="36724000" />
       <workItem from="1746148235705" duration="8850000" />
-      <workItem from="1746188051742" duration="1923000" />
+      <workItem from="1746188051742" duration="7081000" />
     </task>
     <servers />
   </component>

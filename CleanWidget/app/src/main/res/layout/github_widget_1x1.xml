@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="1dp"
+    android:gravity="center_vertical|center_horizontal"
+    android:background="@color/github_background">
+
+    <LinearLayout
+        android:id="@+id/contribution_grid_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal" >
+
+        <!-- 4개 열, 각 열 7개 셀 -->
+        <!-- Column 0 -->
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:id="@+id/grid_cell_0" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_1" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_2" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_3" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_4" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_5" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_6" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+        </LinearLayout>
+        <!-- Column 1 -->
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+             <TextView android:id="@+id/grid_cell_7" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+             <TextView android:id="@+id/grid_cell_8" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+             <TextView android:id="@+id/grid_cell_9" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+             <TextView android:id="@+id/grid_cell_10" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+             <TextView android:id="@+id/grid_cell_11" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+             <TextView android:id="@+id/grid_cell_12" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+             <TextView android:id="@+id/grid_cell_13" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+        </LinearLayout>
+        <!-- Column 2 -->
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:id="@+id/grid_cell_14" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_15" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_16" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_17" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_18" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_19" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_20" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+        </LinearLayout>
+        <!-- Column 3 -->
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:id="@+id/grid_cell_21" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_22" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_23" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_24" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_25" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_26" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_27" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:background="#CCCCCC"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout> 

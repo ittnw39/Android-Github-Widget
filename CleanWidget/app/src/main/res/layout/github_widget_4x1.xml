@@ -8,12 +8,13 @@
     android:gravity="center_vertical|center_horizontal"
     android:background="@color/github_background">
 
-    <!-- 컨트리뷰션 그리드 컨테이너 (너비 채우기) -->
+    <!-- 컨트리뷰션 그리드 컨테이너 -->
     <LinearLayout
         android:id="@+id/contribution_grid_container"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:gravity="center_horizontal" >
 
         <!-- 15개 열, 각 열 너비는 내용물에 맞게 -->
 
@@ -168,6 +169,110 @@
             <TextView android:id="@+id/grid_cell_102" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
             <TextView android:id="@+id/grid_cell_103" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
             <TextView android:id="@+id/grid_cell_104" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+        </LinearLayout>
+
+        <!-- 추가된 열: Column 15 ~ 19 -->
+        <!-- Column 15 -->
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:id="@+id/grid_cell_105" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_106" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_107" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_108" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_109" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_110" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_111" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+        </LinearLayout>
+        <!-- Column 16 -->
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:id="@+id/grid_cell_112" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_113" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_114" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_115" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_116" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_117" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_118" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+        </LinearLayout>
+        <!-- Column 17 -->
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:id="@+id/grid_cell_119" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_120" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_121" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_122" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_123" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_124" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_125" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+        </LinearLayout>
+        <!-- Column 18 -->
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:id="@+id/grid_cell_126" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_127" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_128" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_129" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_130" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_131" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_132" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+        </LinearLayout>
+        <!-- Column 19 -->
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:id="@+id/grid_cell_133" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_134" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_135" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_136" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_137" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_138" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_139" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+        </LinearLayout>
+
+        <!-- 추가된 열: Column 20 ~ 24 -->
+        <!-- Column 20 -->
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:id="@+id/grid_cell_140" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_141" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_142" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_143" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_144" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_145" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_146" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+        </LinearLayout>
+        <!-- Column 21 -->
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:id="@+id/grid_cell_147" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_148" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_149" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_150" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_151" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_152" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_153" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+        </LinearLayout>
+        <!-- Column 22 -->
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:id="@+id/grid_cell_154" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_155" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_156" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_157" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_158" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_159" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_160" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+        </LinearLayout>
+        <!-- Column 23 -->
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:id="@+id/grid_cell_161" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_162" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_163" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_164" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_165" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_166" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_167" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+        </LinearLayout>
+        <!-- Column 24 -->
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:id="@+id/grid_cell_168" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_169" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_170" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_171" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_172" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_173" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
+            <TextView android:id="@+id/grid_cell_174" android:layout_width="10dp" android:layout_height="10dp" android:layout_margin="1dp" android:layout_gravity="center_horizontal" android:background="#CCCCCC"/>
         </LinearLayout>
 
     </LinearLayout>

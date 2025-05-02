@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.DayOfWeek
 
 // 4x2 위젯용 Provider 클래스
 class GitHubWidgetProvider4x2 : AppWidgetProvider() {
@@ -58,9 +59,12 @@ class GitHubWidgetProvider4x2 : AppWidgetProvider() {
         )
         views.setOnClickPendingIntent(R.id.refresh_button, refreshPendingIntent)
 
-        val mainActivityIntent = Intent(context, MainActivity::class.java)
+        val mainActivityIntent = Intent(context, MainActivity::class.java).apply {
+            putExtra(MainActivity.EXTRA_SHOW_USERNAME_DIALOG, true)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
         val mainActivityPendingIntent = PendingIntent.getActivity(
-            context, requestCode, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE
+            context, requestCode, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         views.setOnClickPendingIntent(R.id.widget_root, mainActivityPendingIntent)
 
@@ -68,7 +72,8 @@ class GitHubWidgetProvider4x2 : AppWidgetProvider() {
             Log.d(TAG, "Coroutine started for ID: $appWidgetId")
             try {
                 val repository = GitHubRepository()
-                val year = LocalDate.now().year
+                val currentYear = LocalDate.now().year
+                val previousYear = currentYear - 1
                 val username = GitHubWidgetProvider4x3.GITHUB_USERNAME
                 if (username.isEmpty()) {
                     Log.w(TAG, "GitHub username is empty. Cannot update widget.")
@@ -80,21 +85,33 @@ class GitHubWidgetProvider4x2 : AppWidgetProvider() {
                     }
                     return@launch
                 }
-                Log.d(TAG, "Username: $username, Year: $year")
-                val (totalCount, contributionsByDay) = repository.getContributionYearData(username, year)
-                Log.d(TAG, "Data fetched for ID: $appWidgetId - Total: $totalCount, Days: ${contributionsByDay.size}")
+                Log.d(TAG, "Username: $username, Year: $currentYear")
+
+                // 현재 연도 데이터 가져오기
+                val (currentTotalCount, currentYearContributions) = repository.getContributionYearData(username, currentYear)
+                // 작년 데이터 가져오기
+                val (_, previousYearContributions) = repository.getContributionYearData(username, previousYear)
+
+                // 데이터 병합
+                val combinedContributionsByDay = mutableMapOf<String, Int>()
+                combinedContributionsByDay.putAll(previousYearContributions)
+                combinedContributionsByDay.putAll(currentYearContributions)
+
+                Log.d(TAG, "Data fetched for ID: $appWidgetId - Combined Days: ${combinedContributionsByDay.size}")
 
                 Log.d(TAG, "Calling updateContributionGrid for ID: $appWidgetId")
-                updateContributionGrid(views, contributionsByDay)
+                updateContributionGrid(views, combinedContributionsByDay)
                 Log.d(TAG, "Finished updateContributionGrid for ID: $appWidgetId")
 
                 CoroutineScope(Dispatchers.Main).launch {
                     Log.d(TAG, "Updating UI on Main thread for ID: $appWidgetId")
                     val todayDate = LocalDate.now().format(DateTimeFormatter.ISO_DATE)
-                    val todayCount = contributionsByDay[todayDate] ?: 0
+                    // 오늘 카운트는 병합된 데이터에서 찾음
+                    val todayCount = combinedContributionsByDay[todayDate] ?: 0
                     views.setTextViewText(R.id.widget_title, username)
                     views.setTextViewText(R.id.today_contributions, todayCount.toString())
-                    views.setTextViewText(R.id.total_contributions, totalCount.toString())
+                    // 전체 카운트는 현재 연도 기준으로 표시 (혹은 필요시 합산)
+                    views.setTextViewText(R.id.total_contributions, currentTotalCount.toString())
 
                     Log.d(TAG, "Calling appWidgetManager.updateAppWidget for ID: $appWidgetId")
                     appWidgetManager.updateAppWidget(appWidgetId, views)
@@ -117,30 +134,52 @@ class GitHubWidgetProvider4x2 : AppWidgetProvider() {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val cellIds = GitHubWidgetProvider4x3.cellIds
         val maxDays = GitHubWidgetProvider4x3.MAX_DAYS
+        val numRows = 7
+        val numCols = (maxDays + 6) / 7 // 총 열 개수 계산 (21)
 
-        if (cellIds.isEmpty()) {
-            Log.w(TAG, "Cell IDs are empty. Cannot update contribution grid.")
-            return
+        if (cellIds.size < maxDays) {
+            Log.w(TAG, "Cell IDs size (${cellIds.size}) is less than MAX_DAYS ($maxDays). Cannot update grid properly.")
+            // return
         }
 
-        for (i in cellIds.indices) {
-            try {
-                val date = today.minusDays((maxDays - i - 1).toLong())
-                val dateStr = date.format(formatter)
-                val contributions = contributionsData[dateStr] ?: 0
+        // 모든 셀을 기본 색상으로 초기화
+        for (id in cellIds) {
+             try {
+                 views.setInt(id, "setBackgroundColor", Color.parseColor("#EEEEEE"))
+             } catch (e: Exception) {
+                 Log.e(TAG, "Error initializing cell ID: $id", e)
+             }
+        }
 
-                val color = when {
-                    contributions == 0 -> Color.parseColor("#EEEEEE")
-                    contributions < 3 -> Color.parseColor("#9BE9A8")
-                    contributions < 5 -> Color.parseColor("#40C463")
-                    contributions < 10 -> Color.parseColor("#30A14E")
-                    else -> Color.parseColor("#216E39")
-                }
-                if (i < cellIds.size) {
-                    views.setInt(cellIds[i], "setBackgroundColor", color)
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Error updating cell index $i (ID: ${cellIds.getOrNull(i)} )", e)
+        val todayDayOfWeek = (today.dayOfWeek.value - 1 + 7) % 7
+
+        for (dayIndex in 0 until maxDays) {
+            val currentDate = today.minusDays(dayIndex.toLong())
+            val dateStr = currentDate.format(formatter)
+            val contributions = contributionsData[dateStr] ?: 0
+
+            val row = (currentDate.dayOfWeek.value - 1 + 7) % 7
+            val weeksAgo = java.time.temporal.ChronoUnit.WEEKS.between(currentDate.with(DayOfWeek.MONDAY), today.with(DayOfWeek.MONDAY)).toInt()
+            val col = (numCols - 1) - weeksAgo
+
+            val cellIndex = col * numRows + row
+
+            if (col >= 0 && cellIndex >= 0 && cellIndex < cellIds.size) {
+                 val cellId = cellIds[cellIndex]
+                try {
+                    val color = when {
+                        contributions == 0 -> Color.parseColor("#EEEEEE")
+                        contributions < 3 -> Color.parseColor("#9BE9A8")
+                        contributions < 5 -> Color.parseColor("#40C463")
+                        contributions < 10 -> Color.parseColor("#30A14E")
+                        else -> Color.parseColor("#216E39")
+                    }
+                    views.setInt(cellId, "setBackgroundColor", color)
+                 } catch (e: Exception) {
+                     Log.e(TAG, "Error setting color for cell index $cellIndex (ID: $cellId), date: $dateStr", e)
+                 }
+            } else {
+                 Log.w(TAG, "Calculated invalid cell index: $cellIndex for date: $dateStr (row: $row, col: $col)")
             }
         }
     }

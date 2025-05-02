@@ -67,6 +67,56 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/github_widget_info_4x2" />
         </receiver>
+
+        <!-- 1x1 위젯 Provider -->
+        <receiver
+            android:name=".GitHubWidgetProvider1x1"
+            android:label="GitHub 컨트리뷰션 (1x1)"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.myapplication.ACTION_UPDATE_WIDGET_1x1" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/github_widget_info_1x1" />
+        </receiver>
+
+        <!-- 2x1 위젯 Provider -->
+        <receiver
+            android:name=".GitHubWidgetProvider2x1"
+            android:label="GitHub 컨트리뷰션 (2x1)"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.myapplication.ACTION_UPDATE_WIDGET_2x1" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/github_widget_info_2x1" />
+        </receiver>
+
+        <!-- 3x1 위젯 Provider -->
+        <receiver
+            android:name=".GitHubWidgetProvider3x1"
+            android:label="GitHub 컨트리뷰션 (3x1)"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.myapplication.ACTION_UPDATE_WIDGET_3x1" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/github_widget_info_3x1" />
+        </receiver>
+
+        <!-- 위젯 설정 액티비티 -->
+        <activity android:name=".WidgetConfigureActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

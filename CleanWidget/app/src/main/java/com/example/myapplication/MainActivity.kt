@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val PREFS_NAME = "GitHubWidgetPrefs"
         private const val KEY_USERNAME = "username"
+        const val EXTRA_SHOW_USERNAME_DIALOG = "show_username_dialog"
         private lateinit var yearSpinner: Spinner
         private var selectedYear = LocalDate.now().year
 
@@ -63,15 +64,30 @@ class MainActivity : AppCompatActivity() {
                 action = GitHubWidgetProvider4x2.ACTION_UPDATE_WIDGET_4x2
             }
             context.sendBroadcast(intent4x2)
+
+            // 추가: 1x1 위젯 업데이트 브로드캐스트
+            val intent1x1 = Intent(context, GitHubWidgetProvider1x1::class.java).apply {
+                action = GitHubWidgetProvider1x1.ACTION_UPDATE_WIDGET_1x1
+            }
+            context.sendBroadcast(intent1x1)
+
+            // 추가: 2x1 위젯 업데이트 브로드캐스트
+            val intent2x1 = Intent(context, GitHubWidgetProvider2x1::class.java).apply {
+                action = GitHubWidgetProvider2x1.ACTION_UPDATE_WIDGET_2x1
+            }
+            context.sendBroadcast(intent2x1)
+
+            // 추가: 3x1 위젯 업데이트 브로드캐스트
+            val intent3x1 = Intent(context, GitHubWidgetProvider3x1::class.java).apply {
+                action = GitHubWidgetProvider3x1.ACTION_UPDATE_WIDGET_3x1
+            }
+            context.sendBroadcast(intent3x1)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        // 저장된 사용자명 불러오기
-        loadSavedUsername()
 
         // 알림 채널 생성
         NotificationUtils.createNotificationChannel(this)
@@ -82,8 +98,35 @@ class MainActivity : AppCompatActivity() {
         // UI 요소 초기화
         setupViews()
 
-        // GitHub 데이터 로드
-        loadGitHubData()
+        // 인텐트 처리 로직 추가
+        handleIntent(intent)
+
+        // 저장된 사용자명 불러오기 (항상 필요)
+        loadSavedUsername()
+
+        // 인텐트로 다이얼로그를 표시하지 않는 경우에만 데이터 로드
+        if (intent?.getBooleanExtra(EXTRA_SHOW_USERNAME_DIALOG, false) != true) {
+             loadGitHubData()
+        }
+    }
+
+    // onNewIntent 추가 (Activity가 이미 실행 중일 때 Intent 처리)
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent) // 새 인텐트로 업데이트
+        handleIntent(intent)
+    }
+
+    // 인텐트 처리 함수 추가
+    private fun handleIntent(intent: Intent?) {
+        if (intent?.getBooleanExtra(EXTRA_SHOW_USERNAME_DIALOG, false) == true) {
+            // 다이얼로그 표시 후, extra를 제거하여 반복 표시 방지
+            intent.removeExtra(EXTRA_SHOW_USERNAME_DIALOG)
+            // 약간의 딜레이 후 다이얼로그 표시 (UI 렌더링 후)
+            findViewById<View>(android.R.id.content).postDelayed({
+                showChangeUsernameDialog()
+            }, 100) // 100ms 딜레이
+        }
     }
 
     private fun setupViews() {
@@ -233,52 +276,12 @@ class MainActivity : AppCompatActivity() {
         val savedUsername = prefs.getString(KEY_USERNAME, null)
         if (!savedUsername.isNullOrEmpty()) {
             username = savedUsername
-            // 위젯 Provider의 공통 사용자 이름 설정
             GitHubWidgetProvider4x3.GITHUB_USERNAME = savedUsername
         } else {
-            // 저장된 사용자명이 없으면 입력 다이얼로그 표시
-            showFirstTimeUsernameDialog()
+            // 위젯 설정 액티비티에서 초기 설정을 하므로, 여기서는 첫 실행 다이얼로그를 표시하지 않음
+            // showFirstTimeUsernameDialog() // 주석 처리 또는 삭제
+            // 단, 사용자가 설정을 건너뛴 경우 등에 대한 예외 처리 필요 시 추가 가능
         }
-        // 앱 시작 시 위젯 업데이트 트리거 (선택 사항)
-        // updateAllWidgets(this)
-    }
-
-    private fun showFirstTimeUsernameDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_change_username, null)
-        val etUsername = dialogView.findViewById<EditText>(R.id.et_username)
-        
-        val dialog = AlertDialog.Builder(this)
-            .setTitle("GitHub 사용자명 입력")
-            .setMessage("GitHub Contribution을 표시할 사용자명을 입력해주세요.")
-            .setView(dialogView)
-            .setCancelable(false) // 뒤로가기 버튼으로 닫기 방지
-            .setPositiveButton("확인", null) // 나중에 리스너 설정
-            .create()
-        
-        // 다이얼로그가 표시된 후 버튼 동작 설정
-        dialog.setOnShowListener {
-            val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            positiveButton.setOnClickListener {
-                val newUsername = etUsername.text.toString().trim()
-                if (newUsername.isNotEmpty()) {
-                    // 사용자명 저장 및 적용
-                    username = newUsername
-                    saveUsername(newUsername)
-                    GitHubWidgetProvider4x3.GITHUB_USERNAME = newUsername
-                    
-                    // 데이터 로드
-                    loadGitHubData()
-                    updateAllWidgets(this@MainActivity)
-                    
-                    dialog.dismiss()
-                } else {
-                    // 빈 입력 시 에러 메시지 표시
-                    Toast.makeText(this@MainActivity, "사용자명을 입력해주세요", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-        
-        dialog.show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

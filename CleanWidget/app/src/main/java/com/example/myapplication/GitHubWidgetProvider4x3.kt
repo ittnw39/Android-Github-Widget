@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.DayOfWeek
 
 class GitHubWidgetProvider4x3 : AppWidgetProvider() {
 
@@ -24,7 +25,7 @@ class GitHubWidgetProvider4x3 : AppWidgetProvider() {
         private const val TAG = "GitHubWidgetProvider4x3"
         const val ACTION_UPDATE_WIDGET_4x3 = "com.example.myapplication.ACTION_UPDATE_WIDGET_4x3"
         var GITHUB_USERNAME = ""
-        internal const val MAX_DAYS = 49
+        internal const val MAX_DAYS = 147
 
         val cellIds = listOf(
             R.id.grid_cell_0, R.id.grid_cell_1, R.id.grid_cell_2, R.id.grid_cell_3, R.id.grid_cell_4,
@@ -36,7 +37,27 @@ class GitHubWidgetProvider4x3 : AppWidgetProvider() {
             R.id.grid_cell_30, R.id.grid_cell_31, R.id.grid_cell_32, R.id.grid_cell_33, R.id.grid_cell_34,
             R.id.grid_cell_35, R.id.grid_cell_36, R.id.grid_cell_37, R.id.grid_cell_38, R.id.grid_cell_39,
             R.id.grid_cell_40, R.id.grid_cell_41, R.id.grid_cell_42, R.id.grid_cell_43, R.id.grid_cell_44,
-            R.id.grid_cell_45, R.id.grid_cell_46, R.id.grid_cell_47, R.id.grid_cell_48
+            R.id.grid_cell_45, R.id.grid_cell_46, R.id.grid_cell_47, R.id.grid_cell_48,
+            R.id.grid_cell_49, R.id.grid_cell_50, R.id.grid_cell_51, R.id.grid_cell_52, R.id.grid_cell_53,
+            R.id.grid_cell_54, R.id.grid_cell_55, R.id.grid_cell_56, R.id.grid_cell_57, R.id.grid_cell_58,
+            R.id.grid_cell_59, R.id.grid_cell_60, R.id.grid_cell_61, R.id.grid_cell_62, R.id.grid_cell_63,
+            R.id.grid_cell_64, R.id.grid_cell_65, R.id.grid_cell_66, R.id.grid_cell_67, R.id.grid_cell_68,
+            R.id.grid_cell_69, R.id.grid_cell_70, R.id.grid_cell_71, R.id.grid_cell_72, R.id.grid_cell_73,
+            R.id.grid_cell_74, R.id.grid_cell_75, R.id.grid_cell_76, R.id.grid_cell_77, R.id.grid_cell_78,
+            R.id.grid_cell_79, R.id.grid_cell_80, R.id.grid_cell_81, R.id.grid_cell_82, R.id.grid_cell_83,
+            R.id.grid_cell_84, R.id.grid_cell_85, R.id.grid_cell_86, R.id.grid_cell_87, R.id.grid_cell_88,
+            R.id.grid_cell_89, R.id.grid_cell_90, R.id.grid_cell_91, R.id.grid_cell_92, R.id.grid_cell_93,
+            R.id.grid_cell_94, R.id.grid_cell_95, R.id.grid_cell_96, R.id.grid_cell_97, R.id.grid_cell_98,
+            R.id.grid_cell_99, R.id.grid_cell_100, R.id.grid_cell_101, R.id.grid_cell_102, R.id.grid_cell_103,
+            R.id.grid_cell_104, R.id.grid_cell_105, R.id.grid_cell_106, R.id.grid_cell_107, R.id.grid_cell_108,
+            R.id.grid_cell_109, R.id.grid_cell_110, R.id.grid_cell_111, R.id.grid_cell_112, R.id.grid_cell_113,
+            R.id.grid_cell_114, R.id.grid_cell_115, R.id.grid_cell_116, R.id.grid_cell_117, R.id.grid_cell_118,
+            R.id.grid_cell_119, R.id.grid_cell_120, R.id.grid_cell_121, R.id.grid_cell_122, R.id.grid_cell_123,
+            R.id.grid_cell_124, R.id.grid_cell_125, R.id.grid_cell_126, R.id.grid_cell_127, R.id.grid_cell_128,
+            R.id.grid_cell_129, R.id.grid_cell_130, R.id.grid_cell_131, R.id.grid_cell_132, R.id.grid_cell_133,
+            R.id.grid_cell_134, R.id.grid_cell_135, R.id.grid_cell_136, R.id.grid_cell_137, R.id.grid_cell_138,
+            R.id.grid_cell_139, R.id.grid_cell_140, R.id.grid_cell_141, R.id.grid_cell_142, R.id.grid_cell_143,
+            R.id.grid_cell_144, R.id.grid_cell_145, R.id.grid_cell_146
         )
     }
 
@@ -70,17 +91,22 @@ class GitHubWidgetProvider4x3 : AppWidgetProvider() {
         )
         views.setOnClickPendingIntent(R.id.refresh_button, refreshPendingIntent)
 
-        val mainActivityIntent = Intent(context, MainActivity::class.java)
+        val mainActivityIntent = Intent(context, MainActivity::class.java).apply {
+            putExtra(MainActivity.EXTRA_SHOW_USERNAME_DIALOG, true)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
         val mainActivityPendingIntent = PendingIntent.getActivity(
-            context, requestCode, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE
+            context, requestCode, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         views.setOnClickPendingIntent(R.id.widget_root, mainActivityPendingIntent)
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val repository = GitHubRepository()
-                val year = LocalDate.now().year
-                if (GITHUB_USERNAME.isEmpty()) {
+                val currentYear = LocalDate.now().year
+                val previousYear = currentYear - 1
+                val username = GITHUB_USERNAME
+                if (username.isEmpty()) {
                     Log.w(TAG, "GitHub username is empty. Cannot update widget.")
                     CoroutineScope(Dispatchers.Main).launch {
                         views.setTextViewText(R.id.widget_title, "사용자 설정 필요")
@@ -90,20 +116,26 @@ class GitHubWidgetProvider4x3 : AppWidgetProvider() {
                     }
                     return@launch
                 }
-                val (totalCount, contributionsByDay) = repository.getContributionYearData(GITHUB_USERNAME, year)
 
-                updateContributionGrid(views, contributionsByDay)
+                val (currentTotalCount, currentYearContributions) = repository.getContributionYearData(username, currentYear)
+                val (_, previousYearContributions) = repository.getContributionYearData(username, previousYear)
+
+                val combinedContributionsByDay = mutableMapOf<String, Int>()
+                combinedContributionsByDay.putAll(previousYearContributions)
+                combinedContributionsByDay.putAll(currentYearContributions)
+
+                updateContributionGrid(views, combinedContributionsByDay)
 
                 CoroutineScope(Dispatchers.Main).launch {
                     val todayDate = LocalDate.now().format(DateTimeFormatter.ISO_DATE)
-                    val todayCount = contributionsByDay[todayDate] ?: 0
-                    views.setTextViewText(R.id.widget_title, GITHUB_USERNAME)
+                    val todayCount = combinedContributionsByDay[todayDate] ?: 0
+                    views.setTextViewText(R.id.widget_title, username)
                     views.setTextViewText(R.id.today_contributions, todayCount.toString())
-                    views.setTextViewText(R.id.total_contributions, totalCount.toString())
+                    views.setTextViewText(R.id.total_contributions, currentTotalCount.toString())
 
                     appWidgetManager.updateAppWidget(appWidgetId, views)
 
-                    if (!contributionsByDay.containsKey(todayDate) || todayCount == 0) {
+                    if (!combinedContributionsByDay.containsKey(todayDate) || todayCount == 0) {
                         NotificationUtils.showContributionReminder(context)
                     }
                 }
@@ -122,30 +154,51 @@ class GitHubWidgetProvider4x3 : AppWidgetProvider() {
     private fun updateContributionGrid(views: RemoteViews, contributionsData: Map<String, Int>) {
         val today = LocalDate.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val numRows = 7
+        val numCols = (MAX_DAYS + 6) / 7
 
-        if (cellIds.isEmpty()) {
-            Log.w(TAG, "Cell IDs are empty. Cannot update contribution grid.")
+        if (cellIds.size < MAX_DAYS) {
+            Log.w(TAG, "Cell IDs size (${cellIds.size}) is less than MAX_DAYS ($MAX_DAYS). Cannot update grid properly.")
             return
         }
 
-        for (i in cellIds.indices) {
+        for (id in cellIds) {
             try {
-                val date = today.minusDays((MAX_DAYS - i - 1).toLong())
-                val dateStr = date.format(formatter)
-                val contributions = contributionsData[dateStr] ?: 0
-
-                val color = when {
-                    contributions == 0 -> Color.parseColor("#EEEEEE")
-                    contributions < 3 -> Color.parseColor("#9BE9A8")
-                    contributions < 5 -> Color.parseColor("#40C463")
-                    contributions < 10 -> Color.parseColor("#30A14E")
-                    else -> Color.parseColor("#216E39")
-                }
-                if (i < cellIds.size) {
-                    views.setInt(cellIds[i], "setBackgroundColor", color)
-                }
+                views.setInt(id, "setBackgroundColor", Color.parseColor("#EEEEEE"))
             } catch (e: Exception) {
-                Log.e(TAG, "Error updating cell index $i (ID: ${cellIds.getOrNull(i)} )", e)
+                Log.e(TAG, "Error initializing cell ID: $id", e)
+            }
+        }
+
+        val todayDayOfWeek = (today.dayOfWeek.value - 1 + 7) % 7
+
+        for (dayIndex in 0 until MAX_DAYS) {
+            val currentDate = today.minusDays(dayIndex.toLong())
+            val dateStr = currentDate.format(formatter)
+            val contributions = contributionsData[dateStr] ?: 0
+
+            val row = (currentDate.dayOfWeek.value - 1 + 7) % 7
+            val weeksAgo = java.time.temporal.ChronoUnit.WEEKS.between(currentDate.with(DayOfWeek.MONDAY), today.with(DayOfWeek.MONDAY)).toInt()
+            val col = (numCols - 1) - weeksAgo
+
+            val cellIndex = col * numRows + row
+
+            if (col >= 0 && cellIndex >= 0 && cellIndex < cellIds.size) {
+                val cellId = cellIds[cellIndex]
+                try {
+                    val color = when {
+                        contributions == 0 -> Color.parseColor("#EEEEEE")
+                        contributions < 3 -> Color.parseColor("#9BE9A8")
+                        contributions < 5 -> Color.parseColor("#40C463")
+                        contributions < 10 -> Color.parseColor("#30A14E")
+                        else -> Color.parseColor("#216E39")
+                    }
+                    views.setInt(cellId, "setBackgroundColor", color)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error setting color for cell index $cellIndex (ID: $cellId), date: $dateStr", e)
+                }
+            } else {
+                Log.w(TAG, "Calculated invalid cell index: $cellIndex for date: $dateStr (row: $row, col: $col)")
             }
         }
     }
