@@ -1,7 +1,10 @@
 package com.example.myapplication
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -17,6 +20,7 @@ import androidx.work.WorkRequest
 import com.example.myapplication.api.GitHubApiClient
 import com.example.myapplication.repository.GitHubRepository
 import com.example.myapplication.util.Constants
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -252,5 +256,23 @@ class MainActivity : AppCompatActivity() {
         }
         
         dialog.show()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_licenses -> {
+                // OssLicensesMenuActivity 시작
+                startActivity(Intent(this, OssLicensesMenuActivity::class.java))
+                // 라이선스 화면 제목 설정 (선택 사항)
+                 OssLicensesMenuActivity.setActivityTitle(getString(R.string.license_title))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

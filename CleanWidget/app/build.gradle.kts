@@ -4,6 +4,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+    id("com.google.android.gms.oss-licenses-plugin")
 }
 
 android {
@@ -83,6 +84,9 @@ dependencies {
     // Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("androidx.cardview:cardview:1.0.0")
+
+    // 오픈소스 라이선스 라이브러리
+    implementation("com.google.android.gms:play-services-oss-licenses:17.0.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
