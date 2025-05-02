@@ -28,12 +28,18 @@ class GitHubSyncWorker(context: Context, workerParams: WorkerParameters) : Corou
             // GitHub 리포지토리 인스턴스 생성
             val repository = GitHubRepository()
             
-            // 컨트리뷰션 데이터 가져오기 (GraphQL 통합 호출 사용)
+            // 컨트리뷰션 데이터 가져오기 (수정: GitHubWidgetProvider4x3 참조)
+            val username = GitHubWidgetProvider4x3.GITHUB_USERNAME
+            if (username.isEmpty()) {
+                Log.w(TAG, "Username is empty, skipping sync.")
+                return@withContext Result.success() // Or Result.failure() if this is an error state
+            }
             val year = LocalDate.now().year
-            val (totalCount, contributionsByDay) = repository.getContributionYearData(GitHubWidgetProvider.GITHUB_USERNAME, year)
+            val (totalCount, contributionsByDay) = repository.getContributionYearData(username, year)
             
-            // 위젯 업데이트
-            GitHubWidgetProvider.updateWidgets(applicationContext)
+            // 위젯 업데이트 (수정: MainActivity.updateAllWidgets 호출)
+            // GitHubWidgetProvider.updateWidgets(applicationContext)
+            MainActivity.updateAllWidgets(applicationContext)
             
             // 오늘 컨트리뷰션이 없으면 알림 생성
             val todayDate = LocalDate.now().format(DateTimeFormatter.ISO_DATE)

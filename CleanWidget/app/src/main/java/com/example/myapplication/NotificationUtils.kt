@@ -41,12 +41,12 @@ object NotificationUtils {
             context, 0, mainIntent, PendingIntent.FLAG_IMMUTABLE
         )
         
-        // 새로고침 액션 인텐트
-        val refreshIntent = Intent(context, GitHubWidgetProvider::class.java).apply {
-            action = GitHubWidgetProvider.ACTION_UPDATE_WIDGET
+        // 새로고침 액션 인텐트 (수정: 모든 위젯 업데이트 트리거)
+        val refreshIntent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
-        val refreshPendingIntent = PendingIntent.getBroadcast(
-            context, 0, refreshIntent, PendingIntent.FLAG_IMMUTABLE
+        val refreshPendingIntent = PendingIntent.getActivity(
+            context, 1, refreshIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         
         // 알림 빌더
@@ -62,7 +62,7 @@ object NotificationUtils {
             .setContentIntent(mainPendingIntent)
             .addAction(
                 android.R.drawable.ic_popup_sync,
-                "새로고침",
+                "앱 열기",
                 refreshPendingIntent
             )
             .setAutoCancel(true)

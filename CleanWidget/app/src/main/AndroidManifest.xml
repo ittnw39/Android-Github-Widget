@@ -26,16 +26,46 @@
             </intent-filter>
         </activity>
         
+        <!-- 4x3 위젯 Provider -->
         <receiver
-                android:name=".GitHubWidgetProvider"
-                android:exported="true">
+            android:name=".GitHubWidgetProvider4x3"
+            android:label="GitHub 컨트리뷰션 (4x3)"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.example.myapplication.ACTION_UPDATE_WIDGET" />
+                <action android:name="com.example.myapplication.ACTION_UPDATE_WIDGET_4x3" />
             </intent-filter>
             <meta-data
-                    android:name="android.appwidget.provider"
-                    android:resource="@xml/github_widget_info" />
+                android:name="android.appwidget.provider"
+                android:resource="@xml/github_widget_info_4x3" />
+        </receiver>
+
+        <!-- 4x1 위젯 Provider -->
+        <receiver
+            android:name=".GitHubWidgetProvider4x1"
+            android:label="GitHub 컨트리뷰션 (4x1)"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.myapplication.ACTION_UPDATE_WIDGET_4x1" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/github_widget_info_4x1" />
+        </receiver>
+
+        <!-- 4x2 위젯 Provider -->
+        <receiver
+            android:name=".GitHubWidgetProvider4x2"
+            android:label="GitHub 컨트리뷰션 (4x2)"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.myapplication.ACTION_UPDATE_WIDGET_4x2" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/github_widget_info_4x2" />
         </receiver>
     </application>
 

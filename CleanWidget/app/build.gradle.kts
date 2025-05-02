@@ -4,8 +4,9 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
-    id("com.google.android.gms.oss-licenses-plugin")
 }
+
+apply(plugin = "com.google.android.gms.oss-licenses-plugin") // ✅ 따로 적용
 
 android {
     namespace = "com.example.myapplication"
@@ -45,7 +46,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs = listOf("-Xjvm-default=all", "-Xopt-in=kotlin.RequiresOptIn")
+        freeCompilerArgs = listOf("-Xjvm-default=all", "-opt-in=kotlin.RequiresOptIn")
     }
 }
 

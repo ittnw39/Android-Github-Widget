@@ -18,13 +18,13 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class GitHubWidgetProvider : AppWidgetProvider() {
+class GitHubWidgetProvider4x3 : AppWidgetProvider() {
 
     companion object {
-        private const val TAG = "GitHubWidgetProvider"
-        const val ACTION_UPDATE_WIDGET = "com.example.myapplication.ACTION_UPDATE_WIDGET"
+        private const val TAG = "GitHubWidgetProvider4x3"
+        const val ACTION_UPDATE_WIDGET_4x3 = "com.example.myapplication.ACTION_UPDATE_WIDGET_4x3"
         var GITHUB_USERNAME = ""
-        private const val MAX_DAYS = 49
+        internal const val MAX_DAYS = 49
 
         val cellIds = listOf(
             R.id.grid_cell_0, R.id.grid_cell_1, R.id.grid_cell_2, R.id.grid_cell_3, R.id.grid_cell_4,
@@ -38,109 +38,115 @@ class GitHubWidgetProvider : AppWidgetProvider() {
             R.id.grid_cell_40, R.id.grid_cell_41, R.id.grid_cell_42, R.id.grid_cell_43, R.id.grid_cell_44,
             R.id.grid_cell_45, R.id.grid_cell_46, R.id.grid_cell_47, R.id.grid_cell_48
         )
-
-        @JvmStatic
-        fun updateWidgets(context: Context) {
-            val intent = Intent(context, GitHubWidgetProvider::class.java).apply {
-                action = ACTION_UPDATE_WIDGET
-            }
-            context.sendBroadcast(intent)
-        }
     }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         appWidgetIds.forEach { updateAppWidget(context, appWidgetManager, it) }
     }
 
-    override fun onAppWidgetOptionsChanged(
-        context: Context,
-        appWidgetManager: AppWidgetManager,
-        appWidgetId: Int,
-        newOptions: Bundle?
-    ) {
+    override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle?) {
         updateAppWidget(context, appWidgetManager, appWidgetId)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        if (intent.action == ACTION_UPDATE_WIDGET) {
+        if (intent.action == ACTION_UPDATE_WIDGET_4x3) {
             val appWidgetManager = AppWidgetManager.getInstance(context)
-            val appWidgetIds = appWidgetManager.getAppWidgetIds(
-                ComponentName(context, GitHubWidgetProvider::class.java)
-            )
-            onUpdate(context, appWidgetManager, appWidgetIds)
+            val componentName = ComponentName(context, GitHubWidgetProvider4x3::class.java)
+            onUpdate(context, appWidgetManager, appWidgetManager.getAppWidgetIds(componentName))
         }
     }
 
     @SuppressLint("RemoteViewLayout")
     private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
         val views = RemoteViews(context.packageName, R.layout.widget_layout)
+        val requestCode = appWidgetId
 
-        // 리프레시 버튼
-        val refreshIntent = Intent(context, GitHubWidgetProvider::class.java).apply {
-            action = ACTION_UPDATE_WIDGET
+        val refreshIntent = Intent(context, GitHubWidgetProvider4x3::class.java).apply {
+            action = ACTION_UPDATE_WIDGET_4x3
         }
         val refreshPendingIntent = PendingIntent.getBroadcast(
-            context, 0, refreshIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            context, requestCode, refreshIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         views.setOnClickPendingIntent(R.id.refresh_button, refreshPendingIntent)
 
-        // 메인 액티비티 클릭 이동
         val mainActivityIntent = Intent(context, MainActivity::class.java)
         val mainActivityPendingIntent = PendingIntent.getActivity(
-            context, 0, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE
+            context, requestCode, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE
         )
-        views.setOnClickPendingIntent(R.id.widget_title, mainActivityPendingIntent)
+        views.setOnClickPendingIntent(R.id.widget_root, mainActivityPendingIntent)
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val repository = GitHubRepository()
                 val year = LocalDate.now().year
-                // GraphQL 통합 호출로 연도별 데이터 가져오기
+                if (GITHUB_USERNAME.isEmpty()) {
+                    Log.w(TAG, "GitHub username is empty. Cannot update widget.")
+                    CoroutineScope(Dispatchers.Main).launch {
+                        views.setTextViewText(R.id.widget_title, "사용자 설정 필요")
+                        views.setTextViewText(R.id.total_contributions, "-")
+                        views.setTextViewText(R.id.today_contributions, "-")
+                        appWidgetManager.updateAppWidget(appWidgetId, views)
+                    }
+                    return@launch
+                }
                 val (totalCount, contributionsByDay) = repository.getContributionYearData(GITHUB_USERNAME, year)
-                updateContributionGrid(context, views, contributionsByDay)
+
+                updateContributionGrid(views, contributionsByDay)
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    views.setTextViewText(R.id.widget_title, "$GITHUB_USERNAME 컨트리뷰션")
-                    // 오늘 컨트리뷰션 수
                     val todayDate = LocalDate.now().format(DateTimeFormatter.ISO_DATE)
                     val todayCount = contributionsByDay[todayDate] ?: 0
+                    views.setTextViewText(R.id.widget_title, GITHUB_USERNAME)
                     views.setTextViewText(R.id.today_contributions, todayCount.toString())
                     views.setTextViewText(R.id.total_contributions, totalCount.toString())
 
-                    updateContributionGrid(context, views, contributionsByDay)
                     appWidgetManager.updateAppWidget(appWidgetId, views)
 
-                    if (!contributionsByDay.containsKey(LocalDate.now().format(DateTimeFormatter.ISO_DATE)) || (contributionsByDay[LocalDate.now().format(DateTimeFormatter.ISO_DATE)] ?: 0) == 0) {
+                    if (!contributionsByDay.containsKey(todayDate) || todayCount == 0) {
                         NotificationUtils.showContributionReminder(context)
                     }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "위젯 업데이트 실패", e)
+                Log.e(TAG, "4x3 위젯 업데이트 실패", e)
+                CoroutineScope(Dispatchers.Main).launch {
+                    views.setTextViewText(R.id.widget_title, "오류 발생 (4x3)")
+                    views.setTextViewText(R.id.today_contributions, "?")
+                    views.setTextViewText(R.id.total_contributions, "?")
+                    appWidgetManager.updateAppWidget(appWidgetId, views)
+                }
             }
         }
     }
 
-    private fun updateContributionGrid(context: Context, views: RemoteViews, contributionsData: Map<String, Int>) {
+    private fun updateContributionGrid(views: RemoteViews, contributionsData: Map<String, Int>) {
         val today = LocalDate.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
+        if (cellIds.isEmpty()) {
+            Log.w(TAG, "Cell IDs are empty. Cannot update contribution grid.")
+            return
+        }
+
         for (i in cellIds.indices) {
-            val date = today.minusDays((MAX_DAYS - i - 1).toLong())
-            val dateStr = date.format(formatter)
-            val contributions = contributionsData[dateStr] ?: 0
+            try {
+                val date = today.minusDays((MAX_DAYS - i - 1).toLong())
+                val dateStr = date.format(formatter)
+                val contributions = contributionsData[dateStr] ?: 0
 
-            val color = when {
-                contributions == 0 -> Color.parseColor("#EEEEEE")
-                contributions < 3 -> Color.parseColor("#9BE9A8")
-                contributions < 5 -> Color.parseColor("#40C463")
-                contributions < 10 -> Color.parseColor("#30A14E")
-                else -> Color.parseColor("#216E39")
+                val color = when {
+                    contributions == 0 -> Color.parseColor("#EEEEEE")
+                    contributions < 3 -> Color.parseColor("#9BE9A8")
+                    contributions < 5 -> Color.parseColor("#40C463")
+                    contributions < 10 -> Color.parseColor("#30A14E")
+                    else -> Color.parseColor("#216E39")
+                }
+                if (i < cellIds.size) {
+                    views.setInt(cellIds[i], "setBackgroundColor", color)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error updating cell index $i (ID: ${cellIds.getOrNull(i)} )", e)
             }
-
-            views.setInt(cellIds[i], "setBackgroundColor", color)
-
-            Log.d(TAG, "💡 [$dateStr] => count: $contributions → colorInt: $color")
         }
     }
 }

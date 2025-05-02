@@ -43,6 +43,27 @@ class MainActivity : AppCompatActivity() {
         private const val KEY_USERNAME = "username"
         private lateinit var yearSpinner: Spinner
         private var selectedYear = LocalDate.now().year
+
+        // 모든 GitHub 위젯 업데이트를 트리거하는 함수
+        fun updateAllWidgets(context: Context) {
+            // 4x3 위젯 업데이트 브로드캐스트
+            val intent4x3 = Intent(context, GitHubWidgetProvider4x3::class.java).apply {
+                action = GitHubWidgetProvider4x3.ACTION_UPDATE_WIDGET_4x3
+            }
+            context.sendBroadcast(intent4x3)
+
+            // 4x1 위젯 업데이트 브로드캐스트
+            val intent4x1 = Intent(context, GitHubWidgetProvider4x1::class.java).apply {
+                action = GitHubWidgetProvider4x1.ACTION_UPDATE_WIDGET_4x1
+            }
+            context.sendBroadcast(intent4x1)
+
+            // 4x2 위젯 업데이트 브로드캐스트
+            val intent4x2 = Intent(context, GitHubWidgetProvider4x2::class.java).apply {
+                action = GitHubWidgetProvider4x2.ACTION_UPDATE_WIDGET_4x2
+            }
+            context.sendBroadcast(intent4x2)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,7 +104,7 @@ class MainActivity : AppCompatActivity() {
         btnRefresh = findViewById(R.id.btn_refresh)
         btnRefresh.setOnClickListener {
             loadGitHubData()
-            GitHubWidgetProvider.updateWidgets(this)
+            updateAllWidgets(this)
         }
 
         // 사용자 변경 버튼 설정
@@ -186,12 +207,12 @@ class MainActivity : AppCompatActivity() {
                     username = newUsername
                     saveUsername(newUsername)
 
-                    // 위젯 제공자의 사용자명도 업데이트
-                    GitHubWidgetProvider.GITHUB_USERNAME = newUsername
+                    // 위젯 제공자의 사용자명도 업데이트 (공통 변수 사용)
+                    GitHubWidgetProvider4x3.GITHUB_USERNAME = newUsername
 
                     // 데이터 새로고침
                     loadGitHubData()
-                    GitHubWidgetProvider.updateWidgets(this)
+                    updateAllWidgets(this)
 
                     Toast.makeText(this, "사용자명이 변경되었습니다: $newUsername", Toast.LENGTH_SHORT).show()
                 } else {
@@ -212,11 +233,14 @@ class MainActivity : AppCompatActivity() {
         val savedUsername = prefs.getString(KEY_USERNAME, null)
         if (!savedUsername.isNullOrEmpty()) {
             username = savedUsername
-            GitHubWidgetProvider.GITHUB_USERNAME = savedUsername
+            // 위젯 Provider의 공통 사용자 이름 설정
+            GitHubWidgetProvider4x3.GITHUB_USERNAME = savedUsername
         } else {
             // 저장된 사용자명이 없으면 입력 다이얼로그 표시
             showFirstTimeUsernameDialog()
         }
+        // 앱 시작 시 위젯 업데이트 트리거 (선택 사항)
+        // updateAllWidgets(this)
     }
 
     private fun showFirstTimeUsernameDialog() {
@@ -240,13 +264,12 @@ class MainActivity : AppCompatActivity() {
                     // 사용자명 저장 및 적용
                     username = newUsername
                     saveUsername(newUsername)
-                    GitHubWidgetProvider.GITHUB_USERNAME = newUsername
+                    GitHubWidgetProvider4x3.GITHUB_USERNAME = newUsername
                     
                     // 데이터 로드
                     loadGitHubData()
-                    GitHubWidgetProvider.updateWidgets(this@MainActivity)
+                    updateAllWidgets(this@MainActivity)
                     
-                    // 다이얼로그 닫기
                     dialog.dismiss()
                 } else {
                     // 빈 입력 시 에러 메시지 표시
