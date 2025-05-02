@@ -5,17 +5,18 @@ import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
-import android.content.ComponentName
+// import android.content.ComponentName // 사용되지 않음
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.RemoteViews
-import com.example.myapplication.repository.GitHubRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+// import com.example.myapplication.repository.GitHubRepository // 직접 사용 안 함
+import com.example.myapplication.util.NetworkUtils // 사용 안 함 (초기화에 필요 시 추가)
+// import kotlinx.coroutines.CoroutineScope // 직접 사용 안 함
+// import kotlinx.coroutines.Dispatchers // 직접 사용 안 함
+// import kotlinx.coroutines.launch // 직접 사용 안 함
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.DayOfWeek
@@ -24,7 +25,8 @@ class GitHubWidgetProvider3x1 : AppWidgetProvider() {
 
     companion object {
         private const val TAG = "GitHubWidgetProvider3x1"
-        const val ACTION_UPDATE_WIDGET_3x1 = "com.example.myapplication.ACTION_UPDATE_WIDGET_3x1"
+        // ACTION_UPDATE_WIDGET_3x1 제거
+        // const val ACTION_UPDATE_WIDGET_3x1 = "com.example.myapplication.ACTION_UPDATE_WIDGET_3x1"
         private const val MAX_DAYS_3x1 = 126 // 18주
         private val cellIds_3x1 = listOf(
              R.id.grid_cell_0, R.id.grid_cell_1, R.id.grid_cell_2, R.id.grid_cell_3, R.id.grid_cell_4, R.id.grid_cell_5, R.id.grid_cell_6,
@@ -56,89 +58,124 @@ class GitHubWidgetProvider3x1 : AppWidgetProvider() {
         updateAppWidget(context, appWidgetManager, appWidgetId)
     }
 
+    // onReceive 제거
+    /*
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        if (intent.action == ACTION_UPDATE_WIDGET_3x1) {
-            val appWidgetManager = AppWidgetManager.getInstance(context)
-            val componentName = ComponentName(context, GitHubWidgetProvider3x1::class.java)
-            onUpdate(context, appWidgetManager, appWidgetManager.getAppWidgetIds(componentName))
-        }
+        // ... 기존 코드 제거 ...
     }
+    */
 
     @SuppressLint("RemoteViewLayout")
     private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
         val views = RemoteViews(context.packageName, R.layout.github_widget_3x1)
-        val requestCode = appWidgetId
+        val requestCode = appWidgetId // 고유 ID
 
+        // --- 메인 액티비티 실행 버튼 설정 ---
         val mainActivityIntent = Intent(context, MainActivity::class.java).apply {
-            putExtra(MainActivity.EXTRA_SHOW_USERNAME_DIALOG, true)
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
+        // 고유 requestCode 사용 (appWidgetId + 10003)
+        val mainActivityRequestCode = requestCode + 10003
         val mainActivityPendingIntent = PendingIntent.getActivity(
-            context, requestCode, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            context.applicationContext,
+            mainActivityRequestCode,
+            mainActivityIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         views.setOnClickPendingIntent(R.id.widget_root, mainActivityPendingIntent)
+        // --- 메인 액티비티 실행 버튼 설정 끝 ---
+
+        // --- 초기 UI 설정 ---
+        // 3x1 위젯은 그리드만 있으므로 초기화
+        initializeContributionGrid(views)
+        appWidgetManager.updateAppWidget(appWidgetId, views)
+        // --- 초기 UI 설정 끝 ---
+
+        // --- Coroutine을 이용한 직접 데이터 로딩 제거 ---
+        /*
+        // 네트워크 연결 확인 (제거됨)
+        if (!NetworkUtils.isNetworkAvailable(context)) {
+            Log.w(TAG, "Network not available for widget ID: $appWidgetId")
+            return
+        }
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val repository = GitHubRepository()
-                val currentYear = LocalDate.now().year
-                val previousYear = currentYear - 1
-                val username = GitHubWidgetProvider4x3.GITHUB_USERNAME
-                 if (username.isEmpty()) {
-                    Log.w(TAG, "GitHub username is empty. Cannot update widget.")
-                    return@launch
-                }
-                val (_, currentYearContributions) = repository.getContributionYearData(username, currentYear)
-                val (_, previousYearContributions) = repository.getContributionYearData(username, previousYear)
-                val combinedContributionsByDay = mutableMapOf<String, Int>()
-                combinedContributionsByDay.putAll(previousYearContributions)
-                combinedContributionsByDay.putAll(currentYearContributions)
-
-                updateContributionGrid(views, combinedContributionsByDay)
+                // ... 데이터 로딩 로직 제거 ...
+                updateContributionGrid(views, combinedContributionsByDay) // 직접 호출 안 함
 
                 CoroutineScope(Dispatchers.Main).launch {
-                    appWidgetManager.updateAppWidget(appWidgetId, views)
+                    appWidgetManager.updateAppWidget(appWidgetId, views) // 이미 위에서 호출됨
                 }
             } catch (e: Exception) {
-                 Log.e(TAG, "3x1 위젯 업데이트 실패", e)
+                 Log.e(TAG, "3x1 위젯 업데이트 실패 - Error: ${e.message}", e)
+                 CoroutineScope(Dispatchers.Main).launch {
+                    // 3x1 위젯은 제목이 없으므로 오류 표시는 어려움 (로그만 확인)
+                }
             }
+        }
+        */
+    }
+
+    // 그리드 초기화 함수
+    private fun initializeContributionGrid(views: RemoteViews) {
+        if (cellIds_3x1.size < MAX_DAYS_3x1) { Log.w(TAG, "Cell IDs size mismatch 3x1 init"); return }
+        for (id in cellIds_3x1) {
+            try { views.setInt(id, "setBackgroundColor", Color.parseColor("#EEEEEE")) }
+            catch (e: Exception) { Log.e(TAG, "Init err 3x1 cell $id",e) }
         }
     }
 
-    private fun updateContributionGrid(views: RemoteViews, contributionsData: Map<String, Int>) {
+    // 이 함수는 MainActivity.updateWidgetUI에서 호출됨
+    internal fun updateContributionGrid(views: RemoteViews, contributionsData: Map<String, Int>, context: Context, appWidgetId: Int) {
         val today = LocalDate.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val cellIds = cellIds_3x1
         val maxDays = MAX_DAYS_3x1
         val numRows = 7
-        val numCols = (maxDays + 6) / 7
+        val numCols = (maxDays + numRows - 1) / numRows
 
-        if (cellIds.size < maxDays) { Log.w(TAG, "Cell IDs size mismatch"); return }
+        if (cellIds.size < maxDays) { Log.w(TAG, "Cell IDs size mismatch 3x1 W:$appWidgetId"); return }
 
-        for (id in cellIds) { try { views.setInt(id, "setBackgroundColor", Color.parseColor("#EEEEEE")) } catch (e: Exception) { Log.e(TAG, "Init err $id",e)} }
+        // 초기화
+        for (id in cellIds) { try { views.setInt(id, "setBackgroundColor", Color.parseColor("#EEEEEE")) } catch (e: Exception) { /* Log */ } }
+
+        val startOfWeek = DayOfWeek.MONDAY
 
         for (dayIndex in 0 until maxDays) {
             val currentDate = today.minusDays(dayIndex.toLong())
             val dateStr = currentDate.format(formatter)
             val contributions = contributionsData[dateStr] ?: 0
-            val row = (currentDate.dayOfWeek.value - 1 + 7) % 7
-            val weeksAgo = java.time.temporal.ChronoUnit.WEEKS.between(currentDate.with(DayOfWeek.MONDAY), today.with(DayOfWeek.MONDAY)).toInt()
+
+            val dayOfWeekValue = currentDate.dayOfWeek.value
+            val row = (dayOfWeekValue - startOfWeek.value + 7) % 7
+
+            val weeksAgo = java.time.temporal.ChronoUnit.WEEKS.between(
+                currentDate.with(startOfWeek), today.with(startOfWeek)
+            ).toInt()
             val col = (numCols - 1) - weeksAgo
+
             val cellIndex = col * numRows + row
+
             if (col >= 0 && cellIndex >= 0 && cellIndex < cellIds.size) {
                 val cellId = cellIds[cellIndex]
                 try {
-                    val color = when {
-                        contributions == 0 -> Color.parseColor("#EEEEEE")
-                        contributions < 3 -> Color.parseColor("#9BE9A8")
-                        contributions < 5 -> Color.parseColor("#40C463")
-                        contributions < 10 -> Color.parseColor("#30A14E")
-                        else -> Color.parseColor("#216E39")
-                    }
+                    val color = getContributionColor(contributions)
                     views.setInt(cellId, "setBackgroundColor", color)
-                 } catch (e: Exception) { Log.e(TAG, "SetColor err $cellIndex $cellId $dateStr",e) }
-            } else { Log.w(TAG, "Invalid index $cellIndex $dateStr r$row c$col") }
+                 } catch (e: Exception) { Log.e(TAG, "SetColor err 3x1 $cellIndex $cellId $dateStr W:$appWidgetId",e) }
+            } else { /* Log */ }
         }
+    }
+
+    // 기여도 색상 계산 (공통 유틸로 분리 권장)
+    private fun getContributionColor(contributions: Int): Int {
+        return Color.parseColor(when {
+            contributions == 0 -> "#EEEEEE"
+            contributions < 3 -> "#9BE9A8"
+            contributions < 5 -> "#40C463"
+            contributions < 10 -> "#30A14E"
+            else -> "#216E39"
+        })
     }
 } 

@@ -4,17 +4,17 @@ import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
-import android.content.ComponentName
+// import android.content.ComponentName // 사용되지 않음
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.RemoteViews
-import com.example.myapplication.repository.GitHubRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+// import com.example.myapplication.repository.GitHubRepository // 직접 사용 안 함
+// import kotlinx.coroutines.CoroutineScope // 직접 사용 안 함
+// import kotlinx.coroutines.Dispatchers // 직접 사용 안 함
+// import kotlinx.coroutines.launch // 직접 사용 안 함
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.DayOfWeek
@@ -24,10 +24,10 @@ class GitHubWidgetProvider4x1 : AppWidgetProvider() {
 
     companion object {
         private const val TAG = "GitHubWidgetProvider4x1"
-        const val ACTION_UPDATE_WIDGET_4x1 = "com.example.myapplication.ACTION_UPDATE_WIDGET_4x1"
-        // GITHUB_USERNAME은 공통으로 사용하므로 여기서는 선언하지 않음 (GitHubWidgetProvider4x3의 companion object 참조)
-        // 수정: 25주(175일) 데이터 표시
-        private const val MAX_DAYS_4x1 = 175
+        // ACTION_UPDATE_WIDGET_4x1 제거
+        // const val ACTION_UPDATE_WIDGET_4x1 = "com.example.myapplication.ACTION_UPDATE_WIDGET_4x1"
+        // GITHUB_USERNAME은 공통으로 사용
+        private const val MAX_DAYS_4x1 = 175 // 25주
         private val cellIds_4x1 = listOf(
             R.id.grid_cell_0, R.id.grid_cell_1, R.id.grid_cell_2, R.id.grid_cell_3, R.id.grid_cell_4, R.id.grid_cell_5, R.id.grid_cell_6,
             R.id.grid_cell_7, R.id.grid_cell_8, R.id.grid_cell_9, R.id.grid_cell_10, R.id.grid_cell_11, R.id.grid_cell_12, R.id.grid_cell_13,
@@ -65,124 +65,120 @@ class GitHubWidgetProvider4x1 : AppWidgetProvider() {
         updateAppWidget(context, appWidgetManager, appWidgetId)
     }
 
+    // onReceive 제거
+    /*
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        if (intent.action == ACTION_UPDATE_WIDGET_4x1) {
-            val appWidgetManager = AppWidgetManager.getInstance(context)
-            val componentName = ComponentName(context, GitHubWidgetProvider4x1::class.java)
-            onUpdate(context, appWidgetManager, appWidgetManager.getAppWidgetIds(componentName))
-        }
+        // ... 기존 코드 제거 ...
     }
+    */
 
     @SuppressLint("RemoteViewLayout")
     private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
         val views = RemoteViews(context.packageName, R.layout.github_widget_4x1)
-        val requestCode = appWidgetId
+        val requestCode = appWidgetId // 고유 ID
 
-        // 메인 액티비티 클릭 이동 (루트 레이아웃 클릭)
+        // --- 메인 액티비티 클릭 이동 --- 
         val mainActivityIntent = Intent(context, MainActivity::class.java).apply {
-            // 추가: 다이얼로그 표시 extra
-            putExtra(MainActivity.EXTRA_SHOW_USERNAME_DIALOG, true)
-            // Activity가 이미 떠 있을 때 새 Intent를 받도록 플래그 추가
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
+        // 고유 requestCode 사용 (appWidgetId + 10004)
+        val mainActivityRequestCode = requestCode + 10004
         val mainActivityPendingIntent = PendingIntent.getActivity(
-            context, requestCode, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            context.applicationContext,
+            mainActivityRequestCode,
+            mainActivityIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         views.setOnClickPendingIntent(R.id.widget_root, mainActivityPendingIntent)
+        // --- 메인 액티비티 클릭 설정 끝 --- 
 
-        // 데이터 로딩 및 그리드 업데이트
+        // --- 초기 UI 설정 --- 
+        // 4x1 위젯은 그리드만 있으므로 초기화
+        initializeContributionGrid(views)
+        appWidgetManager.updateAppWidget(appWidgetId, views)
+        // --- 초기 UI 설정 끝 --- 
+
+        // --- 데이터 로딩 및 그리드 업데이트 로직 제거 --- 
+        /*
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val repository = GitHubRepository()
-                val currentYear = LocalDate.now().year
-                val previousYear = currentYear - 1
-                val username = GitHubWidgetProvider4x3.GITHUB_USERNAME
-                 if (username.isEmpty()) {
-                    Log.w(TAG, "GitHub username is empty. Cannot update widget.")
-                    // 사용자 이름 없으면 업데이트 중단 (혹은 빈 그리드 표시)
-                    return@launch
-                }
+                // ... 데이터 로딩 로직 제거 ...
+                updateContributionGrid(views, combinedContributionsByDay) // 직접 호출 안 함
 
-                // 현재 연도 데이터 가져오기
-                val (_, currentYearContributions) = repository.getContributionYearData(username, currentYear)
-                // 작년 데이터 가져오기
-                val (_, previousYearContributions) = repository.getContributionYearData(username, previousYear)
-
-                // 데이터 병합
-                val combinedContributionsByDay = mutableMapOf<String, Int>()
-                combinedContributionsByDay.putAll(previousYearContributions)
-                combinedContributionsByDay.putAll(currentYearContributions)
-
-                // 그리드 업데이트 호출 (병합된 데이터 사용)
-                updateContributionGrid(views, combinedContributionsByDay)
-
-                // UI 업데이트 (그리드만)
                 CoroutineScope(Dispatchers.Main).launch {
-                    appWidgetManager.updateAppWidget(appWidgetId, views)
+                    appWidgetManager.updateAppWidget(appWidgetId, views) // 이미 위에서 호출됨
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "4x1 위젯 업데이트 실패", e)
-                // 오류 시 특별한 처리는 하지 않음 (기존 상태 유지 또는 빈 상태)
+                Log.e(TAG, "4x1 위젯 업데이트 실패 - Error: ${e.message}", e)
+                 CoroutineScope(Dispatchers.Main).launch {
+                     // 4x1에는 오류 표시할 TextView가 없음
+                     // views.setTextViewText(R.id.widget_title, "오류: ${e.javaClass.simpleName}")
+                     // appWidgetManager.updateAppWidget(appWidgetId, views)
+                 }
             }
+        }
+        */
+    }
+
+    // 그리드 초기화 함수
+    private fun initializeContributionGrid(views: RemoteViews) {
+        if (cellIds_4x1.size < MAX_DAYS_4x1) { Log.w(TAG, "Cell IDs size mismatch 4x1 init"); return }
+        for (id in cellIds_4x1) {
+            try { views.setInt(id, "setBackgroundColor", Color.parseColor("#EEEEEE")) }
+            catch (e: Exception) { Log.e(TAG, "Init err 4x1 cell $id", e) }
         }
     }
 
-    // 그리드 업데이트 로직 수정: 요일 정렬 반영
-    private fun updateContributionGrid(views: RemoteViews, contributionsData: Map<String, Int>) {
+    // 이 함수는 MainActivity.updateWidgetUI에서 호출됨
+    internal fun updateContributionGrid(views: RemoteViews, contributionsData: Map<String, Int>, context: Context, appWidgetId: Int) {
         val today = LocalDate.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val cellIds = cellIds_4x1
         val maxDays = MAX_DAYS_4x1
         val numRows = 7
-        val numCols = (maxDays + 6) / 7 // 총 열 개수 계산 (올림)
+        val numCols = (maxDays + numRows - 1) / numRows
 
-        if (cellIds.size < maxDays) { // ID 개수 확인
-            Log.w(TAG, "Cell IDs size (${cellIds.size}) is less than MAX_DAYS ($maxDays). Cannot update grid properly.")
-            // return // 또는 일부만 표시
-        }
+        if (cellIds.size < maxDays) { Log.w(TAG, "Cell IDs size mismatch 4x1 W:$appWidgetId"); return }
 
-        // 모든 셀을 기본 색상으로 초기화
-        for (id in cellIds) {
-             try {
-                 views.setInt(id, "setBackgroundColor", Color.parseColor("#EEEEEE"))
-             } catch (e: Exception) {
-                 Log.e(TAG, "Error initializing cell ID: $id", e)
-             }
-        }
+        // 초기화
+        for (id in cellIds) { try { views.setInt(id, "setBackgroundColor", Color.parseColor("#EEEEEE")) } catch (e: Exception) { /* Log */ } }
 
-        // 오늘 날짜의 요일 (0=월요일, 6=일요일)
-        val todayDayOfWeek = (today.dayOfWeek.value - 1 + 7) % 7
+        val startOfWeek = DayOfWeek.MONDAY
 
         for (dayIndex in 0 until maxDays) {
             val currentDate = today.minusDays(dayIndex.toLong())
             val dateStr = currentDate.format(formatter)
             val contributions = contributionsData[dateStr] ?: 0
 
-            // 해당 날짜의 row, col 계산
-            val row = (currentDate.dayOfWeek.value - 1 + 7) % 7
-            val weeksAgo = java.time.temporal.ChronoUnit.WEEKS.between(currentDate.with(DayOfWeek.MONDAY), today.with(DayOfWeek.MONDAY)).toInt()
-            val col = (numCols - 1) - weeksAgo // 가장 오른쪽 열이 0주 전
+            val dayOfWeekValue = currentDate.dayOfWeek.value
+            val row = (dayOfWeekValue - startOfWeek.value + 7) % 7
+
+            val weeksAgo = java.time.temporal.ChronoUnit.WEEKS.between(
+                currentDate.with(startOfWeek), today.with(startOfWeek)
+            ).toInt()
+            val col = (numCols - 1) - weeksAgo
 
             val cellIndex = col * numRows + row
 
             if (col >= 0 && cellIndex >= 0 && cellIndex < cellIds.size) {
                  val cellId = cellIds[cellIndex]
                 try {
-                    val color = when {
-                        contributions == 0 -> Color.parseColor("#EEEEEE") // 이미 초기화했지만, 데이터 없는 날 명시적 처리
-                        contributions < 3 -> Color.parseColor("#9BE9A8")
-                        contributions < 5 -> Color.parseColor("#40C463")
-                        contributions < 10 -> Color.parseColor("#30A14E")
-                        else -> Color.parseColor("#216E39")
-                    }
+                    val color = getContributionColor(contributions)
                     views.setInt(cellId, "setBackgroundColor", color)
-                 } catch (e: Exception) {
-                     Log.e(TAG, "Error setting color for cell index $cellIndex (ID: $cellId), date: $dateStr", e)
-                 }
-            } else {
-                 Log.w(TAG, "Calculated invalid cell index: $cellIndex for date: $dateStr (row: $row, col: $col)")
-            }
+                 } catch (e: Exception) { Log.e(TAG, "SetColor err 4x1 $cellIndex $cellId $dateStr W:$appWidgetId",e) }
+            } else { /* Log */ }
         }
+    }
+
+    // 기여도 색상 계산 (공통 유틸로 분리 권장)
+    private fun getContributionColor(contributions: Int): Int {
+        return Color.parseColor(when {
+            contributions == 0 -> "#EEEEEE"
+            contributions < 3 -> "#9BE9A8"
+            contributions < 5 -> "#40C463"
+            contributions < 10 -> "#30A14E"
+            else -> "#216E39"
+        })
     }
 } 

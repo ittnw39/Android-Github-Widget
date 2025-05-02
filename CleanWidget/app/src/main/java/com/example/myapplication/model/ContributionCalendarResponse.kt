@@ -1,6 +1,6 @@
 package com.example.myapplication.model
 
-import com.example.myapplication.model.graphql.Week
+import com.example.myapplication.model.Week
 
 data class ContributionCalendarResponse(
     val data: UserData?

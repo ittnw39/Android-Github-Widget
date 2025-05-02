@@ -141,3 +141,18 @@ app/src/main/java/com/example/myapplication/
 ## 라이선스
 
 이 프로젝트는 MIT 라이선스 하에 배포됩니다. 
+
+## 주요 기능
+
+*   다양한 크기의 GitHub Contribution 그래프 위젯 제공 (1x1 ~ 4x3)
+*   사용자별 GitHub 리포지토리 목록 및 연간/일일 Contribution 정보 표시 (MainActivity)
+*   WorkManager를 이용한 주기적인 백그라운드 데이터 동기화
+*   GitHub 사용자명 변경 기능
+*   오늘 Contribution이 없을 경우 알림 제공
+*   오픈소스 라이선스 정보 제공
+
+## 위젯 업데이트 방식
+
+*   **주기적 업데이트:** `WorkManager` (`GitHubSyncWorker`)가 주기적으로 백그라운드에서 실행되어 GitHub 데이터를 가져옵니다.
+*   **수동 새로고침 (4x2, 4x3 위젯):** 위젯의 새로고침 버튼을 클릭하면 해당 위젯 Provider (`GitHubWidgetProvider4x2`, `GitHubWidgetProvider4x3`)로 브로드캐스트가 전송됩니다. Provider의 `onReceive` 메서드는 이 브로드캐스트를 수신하여 `WorkManager`에 `GitHubSyncWorker` 작업을 즉시 실행하도록 요청(enqueue)합니다.
+*   **UI 갱신:** `GitHubSyncWorker` 작업이 성공적으로 완료되면, `MainActivity`의 `updateAllWidgets` 정적 함수를 호출합니다. 이 함수는 최신 데이터를 기반으로 모든 활성화된 위젯들의 `RemoteViews`를 직접 업데이트하고 `AppWidgetManager`를 통해 화면을 갱신합니다. 이를 통해 모든 위젯이 일관된 데이터를 표시하도록 보장합니다. 

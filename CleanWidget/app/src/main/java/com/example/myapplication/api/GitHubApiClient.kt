@@ -6,6 +6,7 @@ import com.example.myapplication.util.Constants
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 /**
  * GitHub API 통신을 위한 Retrofit 클라이언트 객체
@@ -40,6 +41,10 @@ object GitHubApiClient {
 
     val graphqlService: GitHubGraphQLService by lazy {
         val client = OkHttpClient.Builder()
+            // 타임아웃 시간 증가 (예: 30초)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .addInterceptor { chain ->
                 val original = chain.request()
                 val request = original.newBuilder()
