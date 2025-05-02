@@ -5,11 +5,6 @@
       <config />
     </shared>
     <layouts>
-      <layout url="file://$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/activity_github_widget_configure.xml">
-        <config>
-          <theme>@style/Theme.MyApplication</theme>
-        </config>
-      </layout>
       <layout url="file://$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/activity_main.xml">
         <config>
           <theme>@style/Theme.MyApplication</theme>
@@ -20,32 +15,22 @@
           <theme>@style/Theme.MyApplication</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/github_widget_4x1.xml">
+        <config>
+          <theme>@style/Theme.MyApplication</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/github_widget_4x2.xml">
+        <config>
+          <theme>@style/Theme.MyApplication</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/grid_cell_item.xml">
+        <config>
+          <theme>@style/Theme.MyApplication</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/widget_layout.xml">
-        <config>
-          <theme>@style/Theme.MyApplication</theme>
-        </config>
-      </layout>
-      <layout url="file://$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/widget_layout_initial.xml">
-        <config>
-          <theme>@style/Theme.MyApplication</theme>
-        </config>
-      </layout>
-      <layout url="file://$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/widget_layout_large.xml">
-        <config>
-          <theme>@style/Theme.MyApplication</theme>
-        </config>
-      </layout>
-      <layout url="file://$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/widget_layout_medium.xml">
-        <config>
-          <theme>@style/Theme.MyApplication</theme>
-        </config>
-      </layout>
-      <layout url="file://$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/widget_layout_small.xml">
-        <config>
-          <theme>@style/Theme.MyApplication</theme>
-        </config>
-      </layout>
-      <layout url="file://$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/widget_layout_tiny.xml">
         <config>
           <theme>@style/Theme.MyApplication</theme>
         </config>
@@ -57,19 +42,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4bc18caf-74ad-4eb8-afe3-847c936aaa11" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/CleanWidget/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/CleanWidget/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CleanWidget/app/src/main/java/com/example/myapplication/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/CleanWidget/app/src/main/java/com/example/myapplication/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CleanWidget/app/src/main/java/com/example/myapplication/api/GitHubApiClient.kt" beforeDir="false" afterPath="$PROJECT_DIR$/CleanWidget/app/src/main/java/com/example/myapplication/api/GitHubApiClient.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CleanWidget/app/src/main/java/com/example/myapplication/api/GitHubService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/CleanWidget/app/src/main/java/com/example/myapplication/api/GitHubService.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CleanWidget/app/src/main/java/com/example/myapplication/repository/GitHubRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/CleanWidget/app/src/main/java/com/example/myapplication/repository/GitHubRepository.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/CleanWidget/app/src/main/res/layout/activity_main.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetDropDown.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\ittnw\.android\avd\Pixel_4_Edited_API_33.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[adb-R5CR824EPLB-dCJkDc._adb-tls-connect._tcp]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -107,7 +88,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/CleanWidget" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="KubernetesApiPersistence">{}</component>
@@ -128,41 +109,41 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Android App.My_Application.app.executor": "Run",
-    "Android App.app.executor": "Run",
-    "Kotlin script (Beta).build.gradle.kts (1).executor": "Run",
-    "Kotlin script (Beta).build.gradle.kts.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "android-custom-viewC:/Android-Github-Widget/CleanWidget/app/src/main/java/com/example/myapplication/ContributionGridView.kt_SELECTED": "ContributionGridView",
-    "android-custom-viewC:/Android-Github-Widget/app/src/main/java/com/example/myapplication/ContributionGridView.kt_SELECTED": "ContributionGridView",
-    "android.gradle.sync.needed": "true",
-    "git-widget-placeholder": "<unknown>",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/ittnw/OneDrive/바탕 화면/패턴/Pattern/0428/graphicsEditor_0421",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "build.tools",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Android App.My_Application.app.executor&quot;: &quot;Run&quot;,
+    &quot;Android App.app.executor&quot;: &quot;Run&quot;,
+    &quot;Kotlin script (Beta).build.gradle.kts (1).executor&quot;: &quot;Run&quot;,
+    &quot;Kotlin script (Beta).build.gradle.kts.executor&quot;: &quot;Run&quot;,
+    &quot;PROJECT_TRUSTED_KEY&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;android-custom-viewC:/Android-Github-Widget/CleanWidget/app/src/main/java/com/example/myapplication/ContributionGridView.kt_SELECTED&quot;: &quot;ContributionGridView&quot;,
+    &quot;android-custom-viewC:/Android-Github-Widget/app/src/main/java/com/example/myapplication/ContributionGridView.kt_SELECTED&quot;: &quot;ContributionGridView&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/ittnw/OneDrive/바탕 화면/패턴/Pattern/0428/graphicsEditor_0421&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.android.tools.idea.logcat.settings.LogcatApplicationSettingsConfigurableProvider&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "kotlin-gradle-user-dirs": [
-      "C:\\Users\\ittnw\\OneDrive\\바탕 화면\\memory",
-      "C:\\Users\\ittnw\\.gradle"
+  &quot;keyToStringList&quot;: {
+    &quot;kotlin-gradle-user-dirs&quot;: [
+      &quot;C:\\Users\\ittnw\\OneDrive\\바탕 화면\\memory&quot;,
+      &quot;C:\\Users\\ittnw\\.gradle&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateKotlinClassDialog.RecentsKey">
       <recent name="com.example.myapplication" />
     </key>
   </component>
-  <component name="RunManager" selected="Kotlin script (Beta).build.gradle.kts (1)">
-    <configuration name="My_Application.app" type="AndroidRunConfigurationType" factoryName="Android App">
+  <component name="RunManager" selected="Android App.My_Application.app">
+    <configuration name="My_Application.app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <module name="My_Application.app.main" />
       <option name="DEPLOY" value="true" />
       <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
@@ -306,6 +287,8 @@
       <workItem from="1745477673827" duration="9705000" />
       <workItem from="1745918031757" duration="35000" />
       <workItem from="1746013252329" duration="36724000" />
+      <workItem from="1746148235705" duration="8850000" />
+      <workItem from="1746188051742" duration="1923000" />
     </task>
     <servers />
   </component>
@@ -322,5 +305,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

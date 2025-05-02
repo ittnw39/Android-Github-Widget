@@ -46,6 +46,7 @@ class GitHubWidgetProvider4x2 : AppWidgetProvider() {
 
     @SuppressLint("RemoteViewLayout")
     private fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
+        Log.d(TAG, "updateAppWidget started for ID: $appWidgetId")
         val views = RemoteViews(context.packageName, R.layout.github_widget_4x2)
         val requestCode = appWidgetId
 
@@ -64,6 +65,7 @@ class GitHubWidgetProvider4x2 : AppWidgetProvider() {
         views.setOnClickPendingIntent(R.id.widget_root, mainActivityPendingIntent)
 
         CoroutineScope(Dispatchers.IO).launch {
+            Log.d(TAG, "Coroutine started for ID: $appWidgetId")
             try {
                 val repository = GitHubRepository()
                 val year = LocalDate.now().year
@@ -78,21 +80,28 @@ class GitHubWidgetProvider4x2 : AppWidgetProvider() {
                     }
                     return@launch
                 }
+                Log.d(TAG, "Username: $username, Year: $year")
                 val (totalCount, contributionsByDay) = repository.getContributionYearData(username, year)
+                Log.d(TAG, "Data fetched for ID: $appWidgetId - Total: $totalCount, Days: ${contributionsByDay.size}")
 
+                Log.d(TAG, "Calling updateContributionGrid for ID: $appWidgetId")
                 updateContributionGrid(views, contributionsByDay)
+                Log.d(TAG, "Finished updateContributionGrid for ID: $appWidgetId")
 
                 CoroutineScope(Dispatchers.Main).launch {
+                    Log.d(TAG, "Updating UI on Main thread for ID: $appWidgetId")
                     val todayDate = LocalDate.now().format(DateTimeFormatter.ISO_DATE)
                     val todayCount = contributionsByDay[todayDate] ?: 0
                     views.setTextViewText(R.id.widget_title, username)
                     views.setTextViewText(R.id.today_contributions, todayCount.toString())
                     views.setTextViewText(R.id.total_contributions, totalCount.toString())
 
+                    Log.d(TAG, "Calling appWidgetManager.updateAppWidget for ID: $appWidgetId")
                     appWidgetManager.updateAppWidget(appWidgetId, views)
+                    Log.d(TAG, "Finished appWidgetManager.updateAppWidget for ID: $appWidgetId")
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "4x2 위젯 업데이트 실패", e)
+                Log.e(TAG, "4x2 위젯 업데이트 실패 for ID: $appWidgetId", e)
                 CoroutineScope(Dispatchers.Main).launch {
                     views.setTextViewText(R.id.widget_title, "오류 발생 (4x2)")
                     views.setTextViewText(R.id.today_contributions, "?")
