@@ -3,8 +3,9 @@ Android-Github-Widget
 
 # GitHub 컨트리뷰션 위젯
 
-이 앱은 GitHub 사용자의 컨트리뷰션 현황을 안드로이드 위젯으로 표시합니다. 
-별도의 토큰 설정 없이 **GitHub 사용자 이름만 입력하면** 누구나 사용할 수 있습니다.
+- GitHub 사용자 이름만 입력하면 해당 사용자의 컨트리뷰션 현황을 볼 수 있습니다. 
+- 개발 또는 빈번한 사용 시에는 GitHub API 요청 제한을 피하기 위해 개인 액세스 토큰(PAT) 설정이 권장됩니다.
+- 홈 화면 위젯으로 간편하게 확인
 
 ## 기능
 
@@ -31,7 +32,7 @@ Android-Github-Widget
 1. GitHub에서 개인 액세스 토큰 발급:
    - GitHub 계정 → Settings → Developer settings → Personal access tokens → Tokens (classic)
    - Generate new token (classic) 선택
-   - 권한: `read:user` 선택 (최소 권한만 부여)
+   - 권한: `public_repo`, `read:user` 선택 (컨트리뷰션 및 사용자 정보 조회에 필요)
 
 2. 토큰 설정 방법:
    - `local.properties` 파일에 다음 라인 추가:
@@ -47,24 +48,29 @@ Android-Github-Widget
 ```
 app/src/main/java/com/example/myapplication/
 ├── api/                 - API 통신 관련 클래스
-│   ├── GitHubApiClient.kt    - Retrofit 클라이언트 설정
+│   ├── GitHubApiClient.kt    - Retrofit 클라이언트 설정 (REST & GraphQL)
 │   ├── GitHubGraphQLService.kt - GitHub GraphQL API 인터페이스
 │   └── GitHubService.kt      - GitHub REST API 인터페이스
 ├── model/               - 데이터 모델 클래스
+│   ├── graphql/           - GraphQL 응답 관련 데이터 클래스
+│   │   └── ContributionCalendar.kt
+│   ├── ContributionCalendarResponse.kt - GraphQL 응답 모델
 │   ├── Repository.kt         - GitHub 저장소 데이터 모델
 │   └── User.kt               - GitHub 사용자 데이터 모델
 ├── repository/          - 데이터 처리 계층
 │   └── GitHubRepository.kt   - API 호출 및 비즈니스 로직 처리
+├── ui/                  - UI 관련 클래스 (Adapter, Custom View 등)
+│   ├── ContributionGridView.kt - 컨트리뷰션 그래프 커스텀 뷰
+│   └── RepoAdapter.kt       - 저장소 목록 어댑터
 ├── util/                - 유틸리티 클래스
-│   └── Constants.kt          - 상수 정의
-├── ContributionData.kt  - 컨트리뷰션 데이터 모델
+│   ├── Constants.kt          - 상수 정의
+│   └── NotificationUtils.kt - 알림 관련 유틸리티
+├── workers/             - 백그라운드 작업 관련 클래스
+│   └── GitHubSyncWorker.kt  - 백그라운드 동기화 작업
+├── ContributionData.kt  - 컨트리뷰션 데이터 모델 (앱 내부 사용)
 ├── ContributionHelper.kt - 컨트리뷰션 데이터 처리 도우미
-├── ContributionGridView.kt - 컨트리뷰션 그래프 커스텀 뷰
-├── GitHubSyncWorker.kt  - 백그라운드 동기화 작업
 ├── GitHubWidgetProvider.kt - 앱 위젯 제공자
-├── MainActivity.kt      - 메인 액티비티
-├── NotificationUtils.kt - 알림 관련 유틸리티
-└── RepoAdapter.kt       - 저장소 목록 어댑터
+└── MainActivity.kt      - 메인 액티비티
 ```
 
 ### 주요 컴포넌트 역할
@@ -118,7 +124,9 @@ app/src/main/java/com/example/myapplication/
 - **비동기 처리**: Kotlin Coroutines
 - **백그라운드 작업**: WorkManager
 - **JSON 파싱**: Gson
-- **UI 컴포넌트**: AndroidX (RecyclerView, CardView, Spinner), Custom View 
+- **이미지 로딩**: Glide
+- **UI 컴포넌트**: AndroidX (RecyclerView, CardView, Spinner, ConstraintLayout), Custom View
+- **의존성 주입**: (사용하지 않음)
 
 ## 라이선스
 
